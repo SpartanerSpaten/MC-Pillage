@@ -1,2 +1,6 @@
 # MC-Pillage
-Minecraft Plugin
+Minecraft faction plugin which is developed for two teams.
+
+## Features
+ - Temporal Build/ Break protection
+ - Events
