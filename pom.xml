@@ -11,7 +11,7 @@
 
     <groupId>org.bukkit</groupId>
     <artifactId>mc-pillage</artifactId>
-    <version>0.5</version>
+    <version>v0.1a</version>
     <name>MC-Pillage</name>
     <url>http://www.bukkit.org</url>
 
@@ -26,14 +26,14 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version><!--change this value depending on the version or use LATEST-->
+            <version>1.15-R0.1-SNAPSHOT</version><!--change this value depending on the version or use LATEST-->
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version><!--change this value depending on the version-->
+            <version>1.15-R0.1-SNAPSHOT</version><!--change this value depending on the version-->
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

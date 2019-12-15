@@ -1,0 +1,13 @@
+name: mc-pillage
+main: com.einspaten.bukkit.mcpillage.MCPillagePlugin
+version: ${version}
+commands:
+  war:
+    description: Base Command for starting stoping and inforamtion about wars.
+    usage: /war <command>
+  faction:
+    description: Base Commands for managing factions
+    usage: /factions <command>
+  farm:
+    description: Teleports Player into the given Farmworld Dimension
+    usage: /farm <optional nether, end>

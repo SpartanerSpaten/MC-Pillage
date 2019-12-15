@@ -1,21 +1,20 @@
 package com.einspaten.bukkit.mcpillage;
 
-import java.util.Random;
-
-import org.bukkit.World;
-import org.bukkit.Location;
-import org.bukkit.Bukkit;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.util.Random;
 
 /**
  * Handle events for all Player related events
+ *
  * @author SpartanerSpaten
  */
 public class PlayerListener implements Listener {
@@ -26,16 +25,16 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onRespawn(PlayerRespawnEvent event){
+    public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        int team = plugin.getMemberShip(event.getPlayer().getName());
+        int team = plugin.getMemberShip(event.getPlayer().getUniqueId​().toString());
         World world = Bukkit.getServer().getWorld("world");
-        if(team == 1){
+        if (team == 1) {
             int topY = world.getHighestBlockYAt(2500, 0) + 1;
             Location location = new Location(world, 2500, topY, 0);
             event.setRespawnLocation(location);
 
-        } else{
+        } else {
             int topY = world.getHighestBlockYAt(-2500, 0) + 1;
             Location location = new Location(world, -2500, topY, 0);
             event.setRespawnLocation(location);
@@ -44,40 +43,58 @@ public class PlayerListener implements Listener {
 
 
     @EventHandler
-    public void onTeleportation(PlayerTeleportEvent event){
+    public void onTeleportation(PlayerTeleportEvent event) {
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
 
-        if(cause == PlayerTeleportEvent.TeleportCause.COMMAND || cause == PlayerTeleportEvent.TeleportCause.PLUGIN){
+        if (cause == PlayerTeleportEvent.TeleportCause.COMMAND || cause == PlayerTeleportEvent.TeleportCause.PLUGIN) {
+
+            if (event.getPlayer().isOp() && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+                return;
+            }
+
             // Tries too catch if
             Location desiredLoc = event.getTo();
             //if(desiredLoc.getWorld().getName().equalsIgnoreCase("world")){
             Player player = event.getPlayer();
-            int team = plugin.getMemberShip(event.getPlayer().getName());
+            int team = plugin.getMemberShip(event.getPlayer().getUniqueId​().toString());
             World world = desiredLoc.getWorld();
             int deviationX = 0;
             int deviationZ = 0;
             int posX, posZ, posY;
-
-            if(world.getName().equalsIgnoreCase("world") && world.getName().equalsIgnoreCase("nether_farming")){
+            if (team == 1) {
+                posX = 2500;
+                posZ = 0;
+            } else {
+                posX = -2500;
+                posZ = 0;
+            }
+            if (!world.getName().equalsIgnoreCase("world")) {
                 Random random = new Random();
-                deviationX = random.nextInt() % 100;
-                deviationZ = random.nextInt() % 100;
-            }
-            if(team == 1){
-                posX = 2500; posZ = 0;
-            }else{
-                posX = -2500; posZ = 0;
-            }
-            if(!world.getName().equalsIgnoreCase("nether_farming")){
-                posY = world.getHighestBlockYAt(posX + deviationX, deviationZ) + 1;
-            }else {
-                posY = (int)desiredLoc.getY();
+                deviationX = random.nextInt() % 50;
+                deviationZ = random.nextInt() % 50;
             }
 
-            Location location = new Location(world, posX + deviationX, posY, posZ + deviationZ);
+            if (world.getName().equalsIgnoreCase("farm_end")) {
+                posX = 0;
+                posZ = 0;
+            }
+            Location location;
+            if (!world.getName().equalsIgnoreCase("farm_nether")) {
+                posY = world.getHighestBlockYAt(posX + deviationX, deviationZ) + 1;
+                location = new Location(world, posX + deviationX, posY, posZ + deviationZ);
+            } else {
+                location = new Location(world, posX + deviationX, desiredLoc.getY() + 3, posZ + deviationZ);
+                Block temp = location.add(0, -1, 0).getBlock();
+                temp.setType(Material.AIR);
+                temp = location.add(0, -1, 0).getBlock();
+                temp.setType(Material.AIR);
+                temp = location.add(0, -1, 0).getBlock();
+                temp.setType(Material.NETHERRACK);
+                location.add(0, 1, 0);
+
+            }
             event.setTo(location);
-        }
-        else if(cause == PlayerTeleportEvent.TeleportCause.END_GATEWAY || cause == PlayerTeleportEvent.TeleportCause.END_PORTAL || cause == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL){
+        } else if (cause == PlayerTeleportEvent.TeleportCause.END_GATEWAY || cause == PlayerTeleportEvent.TeleportCause.END_PORTAL || cause == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
             event.setCancelled(true);
         }
     }
@@ -91,7 +108,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        if(!plugin.eventManager.getWar()){
+        if (!plugin.eventManager.getWar()) {
             Player player = event.getPlayer();
             World world = Bukkit.getServer().getWorld("world");
             Location location = new Location(world, 0, 100, 0);
@@ -100,10 +117,5 @@ public class PlayerListener implements Listener {
         plugin.getLogger().info(event.getPlayer().getName() + " left the server! :'(");
         //Location location = new Location(world, x, y, z);
         //player.teleport(location);
-    }
-
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-
     }
 }
