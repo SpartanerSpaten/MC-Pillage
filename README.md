@@ -18,6 +18,7 @@ Minecraft faction plugin which is developed for two teams.
         * members
         * spawn
         * forceadd <username> <team> (Op) # this member is automaticaly Lord
+        * forceleader <username> <team> (Op) # Updates Role
         
  + **/war** 
         

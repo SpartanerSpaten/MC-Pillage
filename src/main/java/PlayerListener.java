@@ -30,13 +30,13 @@ public class PlayerListener implements Listener {
         int team = plugin.getMemberShip(event.getPlayer().getUniqueId​().toString());
         World world = Bukkit.getServer().getWorld("world");
         if (team == 1) {
-            int topY = world.getHighestBlockYAt(2500, 0) + 1;
-            Location location = new Location(world, 2500, topY, 0);
+            int topY = world.getHighestBlockYAt(this.plugin.factionTeam1.getMiddleX(), this.plugin.factionTeam1.getMiddleZ()) + 1;
+            Location location = new Location(world, this.plugin.factionTeam2.getMiddleX(), topY, this.plugin.factionTeam2.getMiddleZ());
             event.setRespawnLocation(location);
 
-        } else {
-            int topY = world.getHighestBlockYAt(-2500, 0) + 1;
-            Location location = new Location(world, -2500, topY, 0);
+        } else if (team == 2) {
+            int topY = world.getHighestBlockYAt(this.plugin.factionTeam2.getMiddleX(), this.plugin.factionTeam2.getMiddleZ()) + 1;
+            Location location = new Location(world, this.plugin.factionTeam2.getMiddleX(), topY, this.plugin.factionTeam2.getMiddleZ());
             event.setRespawnLocation(location);
         }
     }

@@ -1,34 +1,62 @@
 package com.einspaten.bukkit.mcpillage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class Faction{
+public class Faction {
 
     int sizeX = 250;
     int sizeZ = 250;
+    public HashMap<String, Boolean> memberRole = new HashMap<String, Boolean>();
+    int spawnSizeX = 7;
     int middleX = 2500;
     int middleZ = 0;
     int team;
     private final MCPillagePlugin plugin;
 
     List<String> members;
+    int spawnSizeZ = 7;
 
-    public Faction(int posx, int posz, int iTeam, MCPillagePlugin plugin){
+    public Faction(int posx, int posz, int iTeam, MCPillagePlugin plugin) {
         middleX = posx;
         middleZ = posz;
         team = iTeam;
         members = new ArrayList<String>();
         this.plugin = plugin;
         members = this.plugin.db.getMembers(this.team);
+        loadRoles();
     }
 
-    public void attackBegin(){
+    public void loadRoles() {
+        boolean hisRole;
+        for (String uuid : members) {
+            hisRole = this.plugin.db.getMemberRole(uuid);
+            memberRole.put(uuid, hisRole);
+        }
+    }
+
+    public boolean getRoleUUid(String uuid) {
+        Boolean role = memberRole.get(uuid);
+        if (role != null) {
+            return role;
+        } else {
+            return false;
+        }
+    }
+
+    public void promote(String uuid) {
+        boolean current = getRoleUUid(uuid);
+        memberRole.put(uuid, !current);
+    }
+
+
+    public void attackBegin() {
         sizeX += 100;
         sizeZ += 100;
     }
 
-    public void attackStop(){
+    public void attackStop() {
         sizeX -= 100;
         sizeZ -= 100;
     }
@@ -58,6 +86,10 @@ public class Faction{
 
     public boolean permissions(int x, int z) {
         return (x < middleX + sizeX && x > middleX - sizeX) && (z < middleZ + sizeZ && z > middleZ - sizeZ);
+    }
+
+    public boolean atSpawn(int x, int z) {
+        return (x < middleX + spawnSizeX && x > middleX - spawnSizeX) && (z < middleZ + spawnSizeZ && z > middleZ - spawnSizeZ);
     }
 
     public boolean isMember(String uuid) {

@@ -27,7 +27,6 @@ public class MCPillagePlugin extends JavaPlugin {
 
     public ArrayList<String> teamColor = new ArrayList<String>();
 
-
     public void readFromFactions() {
         for (String uuid : factionTeam1.members) {
             getLogger().info("Team: 1 " + uuid);

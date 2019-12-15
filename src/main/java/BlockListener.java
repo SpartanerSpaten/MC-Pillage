@@ -32,7 +32,31 @@ public class BlockListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getWorld().getName().equalsIgnoreCase("world")) {
-            if (plugin.factionTeam1.permissions(event.getBlock().getX(), event.getBlock().getZ())) {
+            if (plugin.factionTeam1.atSpawn(event.getBlock().getX(), event.getBlock().getZ())) {
+                // Spawn of Team1
+                boolean memberOfTeam2 = plugin.factionTeam2.isMember(event.getPlayer().getUniqueId​().toString());
+                if (memberOfTeam2) {
+                    event.setCancelled(true);
+                    return;
+                }
+                boolean lord = plugin.factionTeam1.getRoleUUid(event.getPlayer().getUniqueId().toString());
+                if (!lord) {
+                    event.setCancelled(true);
+                }
+                return;
+            } else if (plugin.factionTeam2.atSpawn(event.getBlock().getX(), event.getBlock().getZ())) {
+                // Spawn of Team2
+                boolean memberOfTeam1 = plugin.factionTeam1.isMember(event.getPlayer().getUniqueId​().toString());
+                if (memberOfTeam1) {
+                    event.setCancelled(true);
+                    return;
+                }
+                boolean lord = plugin.factionTeam2.getRoleUUid(event.getPlayer().getUniqueId().toString());
+                if (!lord) {
+                    event.setCancelled(true);
+                }
+                return;
+            } else if (plugin.factionTeam1.permissions(event.getBlock().getX(), event.getBlock().getZ())) {
                 int attackingTeam = plugin.eventManager.getCurrentlyAttacking();
                 boolean memberOfTeam2 = plugin.factionTeam2.isMember(event.getPlayer().getUniqueId​().toString());
                 if (memberOfTeam2 && attackingTeam != 2) {
@@ -55,7 +79,31 @@ public class BlockListener implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.getBlock().getWorld().getName().equalsIgnoreCase("world")) {
-            if (plugin.factionTeam1.permissions(event.getBlock().getX(), event.getBlock().getZ())) {
+            if (plugin.factionTeam1.atSpawn(event.getBlock().getX(), event.getBlock().getZ())) {
+                // Spawn of Team1
+                boolean memberOfTeam2 = plugin.factionTeam2.isMember(event.getPlayer().getUniqueId​().toString());
+                if (memberOfTeam2) {
+                    event.setCancelled(true);
+                    return;
+                }
+                boolean lord = plugin.factionTeam1.getRoleUUid(event.getPlayer().getUniqueId().toString());
+                if (!lord) {
+                    event.setCancelled(true);
+                }
+                return;
+            } else if (plugin.factionTeam2.atSpawn(event.getBlock().getX(), event.getBlock().getZ())) {
+                // Spawn of Team2
+                boolean memberOfTeam1 = plugin.factionTeam1.isMember(event.getPlayer().getUniqueId​().toString());
+                if (memberOfTeam1) {
+                    event.setCancelled(true);
+                    return;
+                }
+                boolean lord = plugin.factionTeam2.getRoleUUid(event.getPlayer().getUniqueId().toString());
+                if (!lord) {
+                    event.setCancelled(true);
+                }
+                return;
+            } else if (plugin.factionTeam1.permissions(event.getBlock().getX(), event.getBlock().getZ())) {
                 int attackingTeam = plugin.eventManager.getCurrentlyAttacking();
                 boolean memberOfTeam2 = plugin.factionTeam2.isMember(event.getPlayer().getUniqueId​().toString());
                 if (memberOfTeam2 && attackingTeam != 2) {
