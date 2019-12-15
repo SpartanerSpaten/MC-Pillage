@@ -31,7 +31,7 @@ public class WarCommand implements CommandExecutor {
                             player.sendMessage("Invalid Team Number should be 1 or 2.");
                             return true;
                         }
-                        plugin.eventManager.startFight(i, 3);
+                        plugin.eventManager.startFight(i);
                     } catch (NumberFormatException nfe) {
                         player.sendMessage("Invalid Team Number should be 1 or 2. Example: /war start 1");
                     }

@@ -63,11 +63,10 @@ public class PlayerListener implements Listener {
             int posX, posZ, posY;
             if (team == 1) {
                 posX = 2500;
-                posZ = 0;
             } else {
                 posX = -2500;
-                posZ = 0;
             }
+            posZ = 0;
             if (!world.getName().equalsIgnoreCase("world")) {
                 Random random = new Random();
                 deviationX = random.nextInt() % 50;

@@ -1,13 +1,17 @@
 name: mc-pillage
 main: com.einspaten.bukkit.mcpillage.MCPillagePlugin
 version: ${version}
+authors:
+  - SpartanerSpaten (EinSpaten)
+  - Use-To
+website: https://github.com/SpartanerSpaten/MC-Pillage
 commands:
   war:
     description: Base Command for starting stoping and inforamtion about wars.
-    usage: /war <command>
+    usage: /war <start, stop, info>
   faction:
     description: Base Commands for managing factions
-    usage: /factions <command>
+    usage: /factions <add, kick, promote, forceleader, forceadd>
   farm:
-    description: Teleports Player into the given Farmworld Dimension
-    usage: /farm <optional nether, end>
+    description: Teleports Player into the given Farmworld Dimension or Creates a new requires Op rights
+    usage: /farm <overworld, nether, end, create>

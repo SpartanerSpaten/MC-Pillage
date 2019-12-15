@@ -1,8 +1,6 @@
 package com.einspaten.bukkit.mcpillage;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -17,14 +15,12 @@ public class EventManager {
     private LocalTime durationOfAttack = null;
     private LocalTime startOfAttack = null;
 
-    private Scoreboard board;
-    private Objective objective;
-    private ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+    private final com.einspaten.bukkit.mcpillage.MCPillagePlugin plugin;
+
     private boolean war = false;
+    private int warduration = 3; // Mins
 
-    private final MCPillagePlugin plugin;
-
-    public EventManager(MCPillagePlugin plugin){
+    public EventManager(com.einspaten.bukkit.mcpillage.MCPillagePlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -73,16 +69,16 @@ public class EventManager {
         java.time.DayOfWeek day = localDate.getDayOfWeek();
 
         if(day == team1Attack){
-            startFight(1, 1);
+            startFight(1);
         } else if (day == team2Attack){
-            startFight(2, 1);
+            startFight(2);
         }
 
     }
 
-    void startFight(int team, int durationMin){
+    void startFight(int team) {
         startOfAttack = LocalTime.now();
-        durationOfAttack = startOfAttack.plusMinutes(durationMin);
+        durationOfAttack = startOfAttack.plusMinutes(warduration);
         currentlyAttacking = team;
         if (currentlyAttacking == 1) {
             plugin.factionTeam2.attackBegin();
@@ -105,24 +101,4 @@ public class EventManager {
         }
         return "There is no war currently.";
     }
-
-    public void createScoreboard(){
-        board = scoreboardManager.getNewScoreboard();
-
-        Team team = board.registerNewTeam("teamname");
-
-        Objective objective = board.registerNewObjective("showhealth", "health");
-        objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-        objective.setDisplayName("/ 20");
-
-
-        for(Player p : Bukkit.getOnlinePlayers()){
-
-            p.setScoreboard(board);
-            p.setHealth(p.getHealth()); //Update their health
-
-        }
-
-    }
-
 }

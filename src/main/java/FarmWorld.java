@@ -30,7 +30,6 @@ public class FarmWorld implements CommandExecutor {
 
         WorldCreator wc = new WorldCreator(name);
         long myseed = new Random().nextLong();
-        player.sendMessage("Using seed: " + myseed);
         wc.seed(myseed);
 
         if (name.equalsIgnoreCase("farm_nether")) {
@@ -44,7 +43,7 @@ public class FarmWorld implements CommandExecutor {
         Bukkit.getServer().unloadWorld(name, false);
         World w = Bukkit.getServer().createWorld(wc);
         w.setAutoSave(true);
-        Bukkit.broadcastMessage("Recreating world: " + name);
+        Bukkit.broadcastMessage("§b§k=== §r Recreating world: " + name + " §b§k=== ");
 
         return true;
     }
