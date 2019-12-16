@@ -25,13 +25,20 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayJoin(PlayerJoinEvent playerJoinEvent) {
+        int team = plugin.getMemberShip(playerJoinEvent.getPlayer().getUniqueId​().toString());
+        String teamColor = this.plugin.teamColor.get(team - 1);
+        playerJoinEvent.setJoinMessage("Welcome back §d§l" + playerJoinEvent.getPlayer().getName() + "§r from " + teamColor + "Team" + team);
+    }
+
+
+    @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
-        Player player = event.getPlayer();
         int team = plugin.getMemberShip(event.getPlayer().getUniqueId​().toString());
         World world = Bukkit.getServer().getWorld("world");
         if (team == 1) {
             int topY = world.getHighestBlockYAt(this.plugin.factionTeam1.getMiddleX(), this.plugin.factionTeam1.getMiddleZ()) + 1;
-            Location location = new Location(world, this.plugin.factionTeam2.getMiddleX(), topY, this.plugin.factionTeam2.getMiddleZ());
+            Location location = new Location(world, this.plugin.factionTeam1.getMiddleX(), topY, this.plugin.factionTeam1.getMiddleZ());
             event.setRespawnLocation(location);
 
         } else if (team == 2) {

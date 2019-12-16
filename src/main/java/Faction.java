@@ -8,15 +8,14 @@ public class Faction {
 
     int sizeX = 250;
     int sizeZ = 250;
-    public HashMap<String, Boolean> memberRole = new HashMap<String, Boolean>();
     int spawnSizeX = 7;
+    public HashMap<String, Boolean> memberRole = new HashMap<String, Boolean>();
     int middleX = 2500;
     int middleZ = 0;
     int team;
     private final MCPillagePlugin plugin;
-
-    List<String> members;
     int spawnSizeZ = 7;
+    List<String> members;
 
     public Faction(int posx, int posz, int iTeam, MCPillagePlugin plugin) {
         middleX = posx;
