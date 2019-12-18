@@ -1,6 +1,7 @@
 name: mc-pillage
 main: com.einspaten.bukkit.mcpillage.MCPillagePlugin
 version: ${version}
+api-version: 1.15
 authors:
   - SpartanerSpaten (EinSpaten)
   - Use-To
@@ -15,3 +16,6 @@ commands:
   farm:
     description: Teleports Player into the given Farmworld Dimension or Creates a new requires Op rights
     usage: /farm <overworld, nether, end, create>
+  eggshop:
+    description: Lets player buy spawn eggs
+    usage: /shop

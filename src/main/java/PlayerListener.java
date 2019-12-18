@@ -21,14 +21,16 @@ public class PlayerListener implements Listener {
     private final MCPillagePlugin plugin;
 
     public PlayerListener(MCPillagePlugin instance) {
-        plugin = instance;
+        this.plugin = instance;
     }
 
     @EventHandler
     public void onPlayJoin(PlayerJoinEvent playerJoinEvent) {
         int team = plugin.getMemberShip(playerJoinEvent.getPlayer().getUniqueId​().toString());
-        String teamColor = this.plugin.teamColor.get(team - 1);
-        playerJoinEvent.setJoinMessage("Welcome back §d§l" + playerJoinEvent.getPlayer().getName() + "§r from " + teamColor + "Team" + team);
+        if (team == 1 || team == 2) {
+            String teamColor = this.plugin.teamColor.get(team - 1);
+            playerJoinEvent.setJoinMessage("Welcome back §d§l" + playerJoinEvent.getPlayer().getName() + "§r from " + teamColor + "Team" + team);
+        }
     }
 
 

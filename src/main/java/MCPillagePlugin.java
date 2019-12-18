@@ -74,17 +74,18 @@ public class MCPillagePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        teamColor.add("§c");
+        teamColor.add("§9");
+
         // Register our events
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(playerListener, this);
         pm.registerEvents(blockListener, this);
 
-        getCommand("war").setExecutor(new WarCommand(this));
-        getCommand("faction").setExecutor(new FactionCommand(this));
-        getCommand("farm").setExecutor(new FarmWorld(this));
-
-        teamColor.add("§c");
-        teamColor.add("§9");
+        getCommand("war").setExecutor(new com.einspaten.bukkit.mcpillage.WarCommand(this));
+        getCommand("faction").setExecutor(new com.einspaten.bukkit.mcpillage.FactionCommand(this));
+        getCommand("farm").setExecutor(new com.einspaten.bukkit.mcpillage.FarmWorld(this));
+        getCommand("eggshop").setExecutor(new ShopClass(this));
 
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         PluginDescriptionFile pdfFile = this.getDescription();

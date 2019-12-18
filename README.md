@@ -33,7 +33,9 @@ Minecraft faction plugin which is developed for two teams.
         * end
         * create <farm_world, farm_nether, farm_end> (Op)
  
- 
+  + **/eggshop**
+  
+        * <see /eggshop lists you all available spawneggs>
  ## Change Log
  
  **v0.1a** (2019.x.x)
