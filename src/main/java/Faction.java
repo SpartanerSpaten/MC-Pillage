@@ -6,13 +6,17 @@ import java.util.List;
 
 public class Faction {
 
-    int sizeX = 250;
-    int sizeZ = 250;
-    int spawnSizeX = 7;
+
     public HashMap<String, Boolean> memberRole = new HashMap<String, Boolean>();
+    int sizeXPositive = 250;
+    int sizeXNegative = 250;
+    int sizeZPositive = 250;
+
+    int spawnSizeX = 7;
     int middleX = 2500;
     int middleZ = 0;
     int team;
+    int sizeZNegative = 250;
     private final MCPillagePlugin plugin;
     int spawnSizeZ = 7;
     List<String> members;
@@ -49,22 +53,18 @@ public class Faction {
         memberRole.put(uuid, !current);
     }
 
-
     public void attackBegin() {
-        sizeX += 100;
-        sizeZ += 100;
+        sizeXNegative += 100;
+        sizeXPositive += 100;
+        sizeZNegative += 100;
+        sizeZPositive += 100;
     }
 
     public void attackStop() {
-        sizeX -= 100;
-        sizeZ -= 100;
-    }
-
-    public void setSizeX(int x){
-        sizeX = x;
-    }
-    public void setSizeZ(int z){
-        sizeZ = z;
+        sizeXNegative -= 100;
+        sizeXPositive -= 100;
+        sizeZNegative += 100;
+        sizeZPositive += 100;
     }
 
     public int getMiddleX() {
@@ -75,16 +75,8 @@ public class Faction {
         return middleZ;
     }
 
-    public int getSizeX() {
-        return sizeX;
-    }
-
-    public int getSizeZ() {
-        return sizeZ;
-    }
-
     public boolean permissions(int x, int z) {
-        return (x < middleX + sizeX && x > middleX - sizeX) && (z < middleZ + sizeZ && z > middleZ - sizeZ);
+        return (x < middleX + sizeXPositive && x > middleX - sizeXNegative) && (z < middleZ + sizeZPositive && z > middleZ - sizeZNegative);
     }
 
     public boolean atSpawn(int x, int z) {

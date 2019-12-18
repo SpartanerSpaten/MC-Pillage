@@ -5,10 +5,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.*;
 
 import java.util.Random;
 
@@ -22,6 +20,15 @@ public class PlayerListener implements Listener {
 
     public PlayerListener(MCPillagePlugin instance) {
         this.plugin = instance;
+    }
+
+    @EventHandler
+    public void playerInteract(PlayerInteractEvent playerInteractEvent) {
+        if (playerInteractEvent.hasBlock() && playerInteractEvent.getClickedBlock().getType() == Material.ENDER_CHEST) {
+            if (playerInteractEvent.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                playerInteractEvent.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler
@@ -122,8 +129,5 @@ public class PlayerListener implements Listener {
             Location location = new Location(world, 0, 100, 0);
             player.teleport(location);
         }
-        plugin.getLogger().info(event.getPlayer().getName() + " left the server! :'(");
-        //Location location = new Location(world, x, y, z);
-        //player.teleport(location);
     }
 }

@@ -24,9 +24,10 @@ public class BlockListener implements Listener {
         /*
          * Prevents any damage by any explosion
          */
-        event.setCancelled(true);
-        event.blockList().clear();
-
+        if (event.getLocation().getWorld().getName().equalsIgnoreCase("world")) {
+            event.setCancelled(true);
+            event.blockList().clear();
+        }
     }
 
     @EventHandler
