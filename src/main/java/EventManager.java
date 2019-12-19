@@ -2,14 +2,10 @@ package com.einspaten.bukkit.mcpillage;
 
 import org.bukkit.Bukkit;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 
 public class EventManager {
-
-    static java.time.DayOfWeek team1Attack = java.time.DayOfWeek.SUNDAY;
-    static java.time.DayOfWeek team2Attack = java.time.DayOfWeek.FRIDAY;
 
     private int currentlyAttacking = -1;
     private LocalTime durationOfAttack = null;
@@ -59,21 +55,6 @@ public class EventManager {
         currentlyAttacking = -1;
         durationOfAttack = null;
         startOfAttack = null;
-    }
-
-
-    public void checkEvent(){
-
-        LocalDate localDate = LocalDate.now();
-
-        java.time.DayOfWeek day = localDate.getDayOfWeek();
-
-        if(day == team1Attack){
-            startFight(1);
-        } else if (day == team2Attack){
-            startFight(2);
-        }
-
     }
 
     void startFight(int team) {

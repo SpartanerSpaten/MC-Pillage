@@ -22,9 +22,7 @@ public class DataBase {
         try {
             openConnection();
             createTables();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
@@ -54,15 +52,28 @@ public class DataBase {
     }
 
     public void createTables() {
-        String sqlCreateTableUser = "CREATE TABLE IF NOT EXISTS users (\n"
-                + "    uuid VARCHAR(32) PRIMARY KEY,\n"
-                + "    name TEXT NOT NULL,\n"
-                + "    faction INTEGER NOT NULL,\n"
-                + "    role BIT DEFAULT 0\n" // We only want 2 roles <Citizen and Lord>
+        String sqlCreateTableUser = "CREATE TABLE IF NOT EXISTS users ("
+                + "    uuid VARCHAR(32) PRIMARY KEY,"
+                + "    name TEXT NOT NULL,"
+                + "    faction INTEGER NOT NULL,"
+                + "    role BIT DEFAULT 0" // We only want 2 roles <Citizen and Lord>
+                + ");";
+        String sqlCreateTableRegion = "CREATE TABLE IF NOT EXISTS region ("
+                + "    team BIT PRIMARY KEY,"
+                + "    sizezpositive INTEGER NOT NULL,"
+                + "    sizeznegative INTEGER NOT NULL,"
+                + "    sizex INTEGER NOT NULL,"
+                + "    lasttime UNIX" // We only want 2 roles <Citizen and Lord>
                 + ");";
         try {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(sqlCreateTableUser);
+            int wrote = stmt.executeUpdate(sqlCreateTableRegion);
+
+            if (wrote == 0 && checkDone()) {
+                insertNewRegion();
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -81,8 +92,6 @@ public class DataBase {
             ex.printStackTrace();
             return false;
         }
-
-
     }
 
 
@@ -204,6 +213,57 @@ public class DataBase {
             ex.printStackTrace();
             return new ArrayList<String>();
         }
+    }
+
+    public ResultSet getRegionInformation(boolean team) {
+        String SelectCommand = "SELECT * FROM region WHERE team == " + team + ";";
+        try {
+            Statement stmt = this.connection.createStatement();
+            return stmt.executeQuery(SelectCommand);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    void insertNewRegion() {
+        String InsertCommandTeam1 = "INSERT INTO region (team, sizezpositive, sizeznegative, sizex, lasttime) VALUES (0, 250, 250, 250, 0);";
+        String InsertCommandTeam2 = "INSERT INTO region (team, sizezpositive, sizeznegative, sizex, lasttime) VALUES (1, 250, 250, 250, 0);";
+        try {
+            Statement stmt = this.connection.createStatement();
+            stmt.executeUpdate(InsertCommandTeam1);
+            stmt.executeUpdate(InsertCommandTeam2);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    boolean checkDone() {
+        String SelectCommand = "SELECT COUNT(*) FROM region;";
+        try {
+            Statement stmt = this.connection.createStatement();
+            ResultSet query = stmt.executeQuery(SelectCommand);
+            // get the number of rows from the result set
+            query.next();
+            return query.getInt(1) > 0;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    void updateRegion(boolean region, int sizeZpos, int sizeZneg, int sizeX, int lasttime) {
+
+        String UpdateCommand = "UPDATE region SET sizezpositive = " + sizeZpos + " , sizeznegative = " + sizeZneg + ", sizex = " + sizeX + ", lastime = " + lasttime + " WHERE team == " + region + ";";
+        try {
+            Statement stmt = this.connection.createStatement();
+            int countInserted = stmt.executeUpdate(UpdateCommand);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
 

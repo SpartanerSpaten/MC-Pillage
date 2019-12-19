@@ -23,9 +23,16 @@ public class MCPillagePlugin extends JavaPlugin {
     private final PlayerListener playerListener = new PlayerListener(this);
     private final BlockListener blockListener = new BlockListener(this);
 
+    private static PluginManager pm;
+
     private final HashMap<String, Number> members = new HashMap<String, Number>();
 
     public ArrayList<String> teamColor = new ArrayList<String>();
+    private AutoTrigger autoTrigger;
+
+    public static PluginManager getPluginManager() {
+        return pm;
+    }
 
     public void readFromFactions() {
         for (String uuid : factionTeam1.members) {
@@ -78,7 +85,7 @@ public class MCPillagePlugin extends JavaPlugin {
         teamColor.add("§9");
 
         // Register our events
-        PluginManager pm = getServer().getPluginManager();
+        pm = getServer().getPluginManager();
         pm.registerEvents(playerListener, this);
         pm.registerEvents(blockListener, this);
 
@@ -93,5 +100,8 @@ public class MCPillagePlugin extends JavaPlugin {
 
         Bukkit.getServer().setWhitelist(true);
         readFromFactions();
+
+        WarTask.setPlugin(this);
+        autoTrigger = new AutoTrigger(this);
     }
 }

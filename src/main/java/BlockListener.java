@@ -3,6 +3,7 @@ package com.einspaten.bukkit.mcpillage;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
@@ -28,6 +29,11 @@ public class BlockListener implements Listener {
             event.setCancelled(true);
             event.blockList().clear();
         }
+    }
+
+    @EventHandler
+    public void onBlockBurn(BlockBurnEvent event) {
+        event.setCancelled(true);
     }
 
     @EventHandler

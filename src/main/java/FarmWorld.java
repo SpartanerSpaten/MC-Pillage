@@ -10,6 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.Random;
 
 
@@ -21,31 +22,21 @@ public class FarmWorld implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    public boolean createWorld(String name, Player player) {
-        player.sendMessage(name);
-        if (name.equalsIgnoreCase("farm_nether") && name.equalsIgnoreCase("farm_end") && name.equalsIgnoreCase("farm_world")) {
-            player.sendMessage("Invalid world name. Valid world name is one of 'farm_nether', 'farm_end' or 'farm_world'.");
+    public static boolean deleteDirectory(File dir) {
+        if (!dir.exists() || !dir.isDirectory()) {
             return false;
         }
 
-        WorldCreator wc = new WorldCreator(name);
-        long myseed = new Random().nextLong();
-        wc.seed(myseed);
-
-        if (name.equalsIgnoreCase("farm_nether")) {
-            wc.environment(Environment.NETHER);
-        } else if (name.equalsIgnoreCase("farm_end")) {
-            wc.environment(Environment.THE_END);
-        } else if (name.equalsIgnoreCase("farm_world")) {
-            wc.environment(Environment.NORMAL);
+        String[] files = dir.list();
+        for (int i = 0, len = files.length; i < len; i++) {
+            File f = new File(dir, files[i]);
+            if (f.isDirectory()) {
+                deleteDirectory(f);
+            } else {
+                f.delete();
+            }
         }
-
-        Bukkit.getServer().unloadWorld(name, false);
-        World w = Bukkit.getServer().createWorld(wc);
-        w.setAutoSave(true);
-        Bukkit.broadcastMessage("§b§k=== §r Recreating world: " + name + " §b§k=== ");
-
-        return true;
+        return dir.delete();
     }
 
 
@@ -87,4 +78,47 @@ public class FarmWorld implements CommandExecutor {
         }
         return true;
     }
+
+    public boolean createWorld(String name, Player player) {
+        player.sendMessage(name);
+
+        deleteWorld(name);
+
+        WorldCreator wc = new WorldCreator(name);
+        long myseed = new Random().nextLong();
+        wc.seed(myseed);
+
+        if (name.equalsIgnoreCase("farm_nether")) {
+            wc.environment(Environment.NETHER);
+        } else if (name.equalsIgnoreCase("farm_end")) {
+            wc.environment(Environment.THE_END);
+        } else if (name.equalsIgnoreCase("farm_world")) {
+            wc.environment(Environment.NORMAL);
+        }
+
+        Bukkit.getServer().unloadWorld(name, false);
+        World w = Bukkit.getServer().createWorld(wc);
+        w.setAutoSave(true);
+        Bukkit.broadcastMessage("§b§k=== §r Recreating world: " + name + " §b§k=== ");
+
+        return true;
+    }
+
+    public boolean deleteWorld(String name) {
+        World world = this.plugin.getServer().getWorld(name);
+        if (world == null) {
+            // We can only delete loaded worlds
+            return false;
+        }
+
+        try {
+            File worldFile = world.getWorldFolder();
+            this.plugin.getServer().unloadWorld(name, false);
+            return deleteDirectory(worldFile);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
