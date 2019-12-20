@@ -11,7 +11,7 @@ import java.util.List;
 public class Faction {
 
 
-    public HashMap<String, Boolean> memberRole = new HashMap<String, Boolean>();
+    public HashMap<String, Number> memberRole = new HashMap<String, Number>();
     int sizeXPositive = 250;
     int sizeXNegative = 250;
     int sizeZPositive = 250;
@@ -37,7 +37,7 @@ public class Faction {
     }
 
     public void loadRoles() {
-        boolean hisRole;
+        int hisRole;
         for (String uuid : members) {
             hisRole = this.plugin.db.getMemberRole(uuid);
             memberRole.put(uuid, hisRole);
@@ -67,18 +67,12 @@ public class Faction {
     }
 
 
-    public boolean getRoleUUid(String uuid) {
-        Boolean role = memberRole.get(uuid);
-        if (role != null) {
-            return role;
-        } else {
-            return false;
-        }
+    public int getRoleUUid(String uuid) {
+        return (int) memberRole.get(uuid);
     }
 
-    public void promote(String uuid) {
-        boolean current = getRoleUUid(uuid);
-        memberRole.put(uuid, !current);
+    public void promote(String uuid, int desiredRole) {
+        memberRole.put(uuid, desiredRole);
     }
 
     public void attackBegin() {
@@ -104,11 +98,11 @@ public class Faction {
     }
 
     public boolean permissions(int x, int z) {
-        return (x < middleX + sizeXPositive && x > middleX - sizeXNegative) && (z < middleZ + sizeZPositive && z > middleZ - sizeZNegative);
+        return (x < middleX + sizeXPositive && x > middleX - sizeXNegative - 1) && (z < middleZ + sizeZPositive && z > middleZ - sizeZNegative - 1);
     }
 
     public boolean atSpawn(int x, int z) {
-        return (x < middleX + spawnSizeX && x > middleX - spawnSizeX) && (z < middleZ + spawnSizeZ && z > middleZ - spawnSizeZ);
+        return (x < middleX + spawnSizeX && x > middleX - spawnSizeX - 1) && (z < middleZ + spawnSizeZ && z > middleZ - spawnSizeZ - 1);
     }
 
     public boolean isMember(String uuid) {

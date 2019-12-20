@@ -37,22 +37,32 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayJoin(PlayerJoinEvent playerJoinEvent) {
         int team = plugin.getMemberShip(playerJoinEvent.getPlayer().getUniqueId​().toString());
-        boolean role;
+        int role;
+        String teamString, teamColor;
+
         if (team == 1) {
             role = plugin.factionTeam1.getRoleUUid(playerJoinEvent.getPlayer().getUniqueId().toString());
             plugin.factionTeam1.addOnlinePlayer(playerJoinEvent.getPlayer());
-        } else {
+            teamString = "§cTeam Communism";
+            teamColor = "§c";
+        } else if (team == 2) {
             role = plugin.factionTeam2.getRoleUUid(playerJoinEvent.getPlayer().getUniqueId().toString());
             plugin.factionTeam2.addOnlinePlayer(playerJoinEvent.getPlayer());
+            teamString = "§9RTeam Capitalism";
+            teamColor = "§9";
+        } else {
+            playerJoinEvent.getPlayer().sendMessage("Pls Register your self with /faction forceadd <name> <team 1/2> other wise some function wont work");
+            return;
         }
-        String teamColor = this.plugin.teamColor.get(team - 1);
         String name;
-        if (role) {
+        if (role == 2) {
             name = teamColor + "Team" + team + "§r | §6" + playerJoinEvent.getPlayer().getName() + "§r";
+        } else if (role == 1) {
+            name = teamColor + "Team" + team + "§r | §3" + playerJoinEvent.getPlayer().getName() + "§r";
         } else {
             name = teamColor + "Team" + team + "§r | §a" + playerJoinEvent.getPlayer().getName() + "§r";
         }
-        String message = "Welcome back §d§l" + playerJoinEvent.getPlayer().getName() + "§r from " + teamColor + "Team" + team;
+        String message = "Welcome back §d§l" + playerJoinEvent.getPlayer().getName() + "§r from " + teamString;
 
         playerJoinEvent.getPlayer().setPlayerListName(name);
         playerJoinEvent.getPlayer().setDisplayName(name);

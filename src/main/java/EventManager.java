@@ -67,8 +67,15 @@ public class EventManager {
             plugin.factionTeam1.attackBegin();
         }
         war = true;
+        String teamString;
         //createScoreboard();
-        Bukkit.broadcastMessage("§b§k=== " + this.plugin.teamColor.get(currentlyAttacking - 1) + "Team " + team + "§r Began to Attack §b§k===");
+        if (currentlyAttacking == 1) {
+            teamString = "§cTeam Communism";
+        } else {
+            teamString = "§9RTeam Capitalism";
+        }
+
+        Bukkit.broadcastMessage("§b§k=== " + this.plugin.teamColor.get(currentlyAttacking - 1) + teamString + "§r Began to Attack §b§k===");
         Bukkit.broadcastMessage("Battel will end at: §d" + printEnd());
     }
 

@@ -56,7 +56,7 @@ public class DataBase {
                 + "    uuid VARCHAR(32) PRIMARY KEY,"
                 + "    name TEXT NOT NULL,"
                 + "    faction INTEGER NOT NULL,"
-                + "    role BIT DEFAULT 0" // We only want 2 roles <Citizen and Lord>
+                + "    role INTEGER DEFAULT 0" // We have 3 Roles <Lord, Major, Civilian>
                 + ");";
         String sqlCreateTableRegion = "CREATE TABLE IF NOT EXISTS region ("
                 + "    team BIT PRIMARY KEY,"
@@ -121,29 +121,29 @@ public class DataBase {
         }
     }
 
-    public boolean getMemberRole(String uuid) {
+    public int getMemberRole(String uuid) {
         String SelectCommand = "SELECT role FROM users WHERE uuid == '" + uuid + "';";
         try {
             Statement stmt = this.connection.createStatement();
             ResultSet query = stmt.executeQuery(SelectCommand);
-            return query.getBoolean("role");
+            return query.getInt("role");
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-            return false;
+            return 0;
         }
     }
 
-    public boolean getMemberRolebyName(String name) {
+    public int getMemberRolebyName(String name) {
         String SelectCommand = "SELECT role FROM users WHERE name == '" + name + "';";
         try {
             Statement stmt = this.connection.createStatement();
             ResultSet query = stmt.executeQuery(SelectCommand);
-            return query.getBoolean("role");
+            return query.getInt("role");
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-            return false;
+            return -1;
         }
     }
 
@@ -161,10 +161,9 @@ public class DataBase {
     }
 
 
-    public boolean UpdateMemberRole(String uuid) {
-        boolean current = getMemberRole(uuid);
+    public boolean UpdateMemberRole(String uuid, int newRole) {
 
-        String UpdateCommand = "UPDATE users SET role = " + !current + " WHERE uuid == '" + uuid + "';";
+        String UpdateCommand = "UPDATE users SET role = " + newRole + " WHERE uuid == '" + uuid + "';";
         try {
             Statement stmt = this.connection.createStatement();
             int countInserted = stmt.executeUpdate(UpdateCommand);

@@ -30,12 +30,14 @@ public class FactionCommand implements CommandExecutor {
     }
 
 
-    public void updateName(int team, boolean role, Player player) {
+    public void updateName(int team, int role, Player player) {
 
         String teamColor = this.plugin.teamColor.get(team - 1);
         String name;
-        if (role) {
+        if (role == 2) {
             name = teamColor + "Team" + team + "§r | §6" + player.getPlayer().getName() + "§r";
+        } else if (role == 1) {
+            name = teamColor + "Team" + team + "§r | §3" + player.getPlayer().getName() + "§r";
         } else {
             name = teamColor + "Team" + team + "§r | §a" + player.getPlayer().getName() + "§r";
         }
@@ -61,26 +63,24 @@ public class FactionCommand implements CommandExecutor {
 
             } else if (split[0].equalsIgnoreCase("members")) {
 
-
                 int hisTeam = this.plugin.getMemberShip(player.getUniqueId​().toString());
-
                 ArrayList<String> members = this.plugin.db.getMembersbyName(hisTeam);
 
-
                 player.sendMessage(this.plugin.teamColor.get(hisTeam - 1) + "§lMembers of Team " + hisTeam);
-                boolean role;
+                int role;
                 for (String name : members) {
                     role = this.plugin.db.getMemberRolebyName(name);
-                    if (role) {
+                    if (role == 2) {
                         player.sendMessage("§6[Lord]§r" + name);
+                    } else if (role == 1) {
+                        player.sendMessage("§3[Lieutenant]§r" + name);
                     } else {
                         player.sendMessage("§a[Civilian]§r" + name);
                     }
-
                 }
             } else if (split[0].equalsIgnoreCase("promote")) {
-                if (this.plugin.db.getMemberRole(player.getUniqueId().toString())) {
-                    if (split.length > 1) {
+                if (this.plugin.db.getMemberRole(player.getUniqueId().toString()) == 2) {
+                    if (split.length > 2) {
                         OfflinePlayer target = Bukkit.getOfflinePlayer(split[1]);
                         if (!target.isWhitelisted​() || !this.plugin.db.existsInDB(target.getUniqueId().toString())) {
                             player.sendMessage("This player is not even on this Server");
@@ -90,31 +90,31 @@ public class FactionCommand implements CommandExecutor {
                         int hisTeam = this.plugin.getMemberShip(target.getUniqueId​().toString());
                         int yourTeam = this.plugin.getMemberShip(player.getUniqueId​().toString());
                         if (hisTeam != yourTeam) {
-                            player.sendMessage("You are in different Teams you can not promote him !");
+                            player.sendMessage("You are in different Teams you can not promote him ! his team: " + hisTeam + "Your team: " + yourTeam);
                             return true;
                         }
 
-                        this.plugin.db.UpdateMemberRole(target.getUniqueId().toString());
+                        int desiredRole = Integer.parseInt(split[2]);
+                        this.plugin.db.UpdateMemberRole(target.getUniqueId().toString(), desiredRole);
 
                         if (yourTeam == 1) {
-                            this.plugin.factionTeam1.promote(target.getUniqueId().toString());
+                            this.plugin.factionTeam1.promote(target.getUniqueId().toString(), desiredRole);
                         } else {
-                            this.plugin.factionTeam2.promote(target.getUniqueId().toString());
+                            this.plugin.factionTeam2.promote(target.getUniqueId().toString(), desiredRole);
                         }
                         if (target.isOnline()) {
                             this.updateName(hisTeam, this.plugin.db.getMemberRole(target.getUniqueId().toString()), Bukkit.getPlayer(target.getUniqueId()));
                         }
 
-
                         player.sendMessage("User role updated");
                     } else {
-                        player.sendMessage("Pls add the name of the player you want to promote / demote");
+                        player.sendMessage("Pls add the name of the player you want to promote / demote and the role <0, 1, 2>");
                     }
                 } else {
                     player.sendMessage("You don't have the permission too do that!");
                 }
             } else if (split[0].equalsIgnoreCase("add")) {
-                if (this.plugin.db.getMemberRole(player.getUniqueId().toString())) {
+                if (this.plugin.db.getMemberRole(player.getUniqueId().toString()) > 0) {
                     if (split.length > 1) {
 
                         OfflinePlayer target = Bukkit.getOfflinePlayer(split[1]);
@@ -122,10 +122,8 @@ public class FactionCommand implements CommandExecutor {
                             player.sendMessage("This player is already on the server.");
                             return true;
                         }
-                        target.setWhitelisted(true);
-                        Bukkit.getServer().reloadWhitelist();
                         int hisTeam = this.plugin.getMemberShip(player.getUniqueId​().toString());
-                        this.plugin.db.addToTeam(target.getName(), target.getUniqueId​().toString(), hisTeam);
+                        registerUser(target, hisTeam); // Creates new User
                         player.sendMessage("Successfully whitelisted");
 
                     } else {
@@ -148,11 +146,11 @@ public class FactionCommand implements CommandExecutor {
                     }
                     OfflinePlayer target = Bukkit.getOfflinePlayer(name);
                     registerUser(target, yourTeam); // Creates new User
-                    this.plugin.db.UpdateMemberRole(target.getUniqueId().toString()); // Makes him Lord
+                    this.plugin.db.UpdateMemberRole(target.getUniqueId().toString(), 2); // Makes him Lord
                     if (yourTeam == 1) {
-                        this.plugin.factionTeam1.promote(target.getUniqueId().toString());
+                        this.plugin.factionTeam1.promote(target.getUniqueId().toString(), 2);
                     } else {
-                        this.plugin.factionTeam2.promote(target.getUniqueId().toString());
+                        this.plugin.factionTeam2.promote(target.getUniqueId().toString(), 2);
                     }
                 }
 
@@ -162,11 +160,11 @@ public class FactionCommand implements CommandExecutor {
                     String name = split[1];
                     int yourTeam = this.plugin.getMemberShip(player.getUniqueId​().toString());
                     OfflinePlayer target = Bukkit.getOfflinePlayer(name);
-                    this.plugin.db.UpdateMemberRole(target.getUniqueId().toString()); // Makes him Lord
+                    this.plugin.db.UpdateMemberRole(target.getUniqueId().toString(), 2); // Makes him Lord
                     if (yourTeam == 1) {
-                        this.plugin.factionTeam1.promote(target.getUniqueId().toString());
+                        this.plugin.factionTeam1.promote(target.getUniqueId().toString(), 2);
                     } else {
-                        this.plugin.factionTeam2.promote(target.getUniqueId().toString());
+                        this.plugin.factionTeam2.promote(target.getUniqueId().toString(), 2);
                     }
                     if (target.isOnline()) {
                         int hisTeam = this.plugin.getMemberShip(target.getUniqueId​().toString());
@@ -176,12 +174,17 @@ public class FactionCommand implements CommandExecutor {
                 }
 
             } else if (split[0].equalsIgnoreCase("kick")) {
-                if (this.plugin.db.getMemberRole(player.getUniqueId().toString())) {
+                int yourRole = this.plugin.db.getMemberRole(player.getUniqueId().toString());
+                if (yourRole > 0) {
                     if (split.length > 1) {
 
                         OfflinePlayer target = Bukkit.getOfflinePlayer(split[1]);
                         if (!target.isWhitelisted​() || !this.plugin.db.existsInDB(target.getUniqueId().toString())) {
                             player.sendMessage("This player is already kicked");
+                            return true;
+                        }
+                        if (this.plugin.db.getMemberRole(target.getUniqueId().toString()) >= yourRole) {
+                            player.sendMessage("You can kick somebody that has the same or even an higher role than you.");
                             return true;
                         }
                         int hisTeam = this.plugin.getMemberShip(target.getUniqueId​().toString());

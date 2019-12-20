@@ -51,8 +51,8 @@ public class BlockListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                boolean lord = plugin.factionTeam1.getRoleUUid(event.getPlayer().getUniqueId().toString());
-                if (!lord) {
+                int role = plugin.factionTeam1.getRoleUUid(event.getPlayer().getUniqueId().toString());
+                if (role != 2) {
                     event.setCancelled(true);
                 }
                 return;
@@ -63,8 +63,8 @@ public class BlockListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                boolean lord = plugin.factionTeam2.getRoleUUid(event.getPlayer().getUniqueId().toString());
-                if (!lord) {
+                int role = plugin.factionTeam2.getRoleUUid(event.getPlayer().getUniqueId().toString());
+                if (role != 2) {
                     event.setCancelled(true);
                 }
                 return;
@@ -98,8 +98,8 @@ public class BlockListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                boolean lord = plugin.factionTeam1.getRoleUUid(event.getPlayer().getUniqueId().toString());
-                if (!lord) {
+                int role = plugin.factionTeam1.getRoleUUid(event.getPlayer().getUniqueId().toString());
+                if (role != 2) {
                     event.setCancelled(true);
                 }
                 return;
@@ -110,8 +110,8 @@ public class BlockListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                boolean lord = plugin.factionTeam2.getRoleUUid(event.getPlayer().getUniqueId().toString());
-                if (!lord) {
+                int role = plugin.factionTeam2.getRoleUUid(event.getPlayer().getUniqueId().toString());
+                if (role != 2) {
                     event.setCancelled(true);
                 }
                 return;

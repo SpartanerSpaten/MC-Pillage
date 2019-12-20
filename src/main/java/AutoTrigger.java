@@ -13,6 +13,6 @@ public class AutoTrigger implements Listener {
     public AutoTrigger(MCPillagePlugin plugin) {
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        task = new com.einspaten.bukkit.mcpillage.WarTask().runTaskTimer(this.plugin, 10, 1000);
+        task = new com.einspaten.bukkit.mcpillage.WarTask().runTaskTimer(this.plugin, 10, 1150); // 1200 is every min
     }
 }

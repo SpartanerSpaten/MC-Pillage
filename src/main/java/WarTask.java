@@ -1,5 +1,6 @@
 package com.einspaten.bukkit.mcpillage;
 
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.DayOfWeek;
@@ -14,8 +15,6 @@ public class WarTask extends BukkitRunnable {
     static LocalTime time = LocalTime.of(19, 30, 0);
     static java.time.DayOfWeek attackDay = DayOfWeek.SATURDAY;
     private static int lastAttacker = 1;
-
-
     public WarTask() {
     }
 
@@ -26,13 +25,13 @@ public class WarTask extends BukkitRunnable {
     @Override
     public void run() {
         if (checkEvent()) {
+            plugin.eventManager.startFight(lastAttacker);
+
             if (lastAttacker == 1) {
                 lastAttacker = 2;
             } else {
                 lastAttacker = 1;
             }
-
-            plugin.eventManager.startFight(lastAttacker);
         }
     }
 
@@ -46,8 +45,19 @@ public class WarTask extends BukkitRunnable {
             if (plugin.eventManager.getWar()) {
                 return false;
             }
-            // Bukkit.getLogger().info("Time: " + Math.abs(MINUTES.between(now, time)));
-            return Math.abs(MINUTES.between(now, time)) < 0;
+            long timeDifference = MINUTES.between(now, time);
+            if (timeDifference == 1 || timeDifference == 5 || timeDifference == 10 || timeDifference == 30) {
+                String team;
+                if (lastAttacker == 1) {
+                    team = "§cTeam Communism";
+                } else {
+                    team = "§9RTeam Capitalism";
+                }
+
+                Bukkit.broadcastMessage("§b§k=== " + team + "§r Will attack in ~" + timeDifference + " Minutes §b§k===");
+            }
+            Bukkit.getLogger().info("Time" + timeDifference);
+            return Math.abs(timeDifference) < 1;
         }
 
         return false;

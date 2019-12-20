@@ -6,14 +6,16 @@ Minecraft faction plugin which is developed for two teams.
  + Events
  + Factions
  + Basic Farmworlds
+ + Egg Shop
  
  ## Commands
  - (Op) ... Operator Rights
  - (Lord) ... Lord Role
+ - (Lieutenant) ... Lieutenant Role
  + **/faction**
         
-        * add <username> (Lord)
-        * kick <username> (Lord)
+        * add <username> (Lieutenant)
+        * kick <username> (Lieutenant)
         * promote <username> (Lord) # There only two roles so it also works as demote
         * members
         * spawn
@@ -36,6 +38,11 @@ Minecraft faction plugin which is developed for two teams.
   + **/eggshop**
   
         * <see /eggshop lists you all available spawneggs>
+        
+              
+**Note** that the teleportation commands works differently for Player with op rights and in creative mode.
+
+
  ## Change Log
  
  **v0.1a** (2019.x.x)
@@ -43,3 +50,7 @@ Minecraft faction plugin which is developed for two teams.
  + Added war faction and farm commands
  + Added Event Manager
  + Place and Break protection
+ + Added Faction Chat
+ + Added Shop for Spawneggs
+ + Added Auto Trigger for war events
+ + Added Spawn Protection
