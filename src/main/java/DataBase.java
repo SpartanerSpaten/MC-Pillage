@@ -1,5 +1,7 @@
 package com.einspaten.bukkit.mcpillage;
 
+import org.bukkit.Bukkit;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -33,7 +35,17 @@ public class DataBase {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
 
+    private void reload() {
+        Bukkit.getLogger().info("Reloading Database");
+        close();
+        try {
+            openConnection();
+            createTables();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void openConnection() throws SQLException, ClassNotFoundException {
@@ -90,6 +102,7 @@ public class DataBase {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return false;
         }
     }
@@ -104,6 +117,7 @@ public class DataBase {
             return countInserted > 0;
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return false;
         }
     }
@@ -117,6 +131,7 @@ public class DataBase {
             return countInserted > 0;
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return false;
         }
     }
@@ -130,6 +145,7 @@ public class DataBase {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return 0;
         }
     }
@@ -143,6 +159,7 @@ public class DataBase {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return -1;
         }
     }
@@ -156,6 +173,7 @@ public class DataBase {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return -1;
         }
     }
@@ -170,6 +188,7 @@ public class DataBase {
             return countInserted > 0;
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return false;
         }
     }
@@ -190,6 +209,7 @@ public class DataBase {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return new ArrayList<String>();
         }
     }
@@ -210,6 +230,7 @@ public class DataBase {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return new ArrayList<String>();
         }
     }
@@ -222,6 +243,7 @@ public class DataBase {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return null;
         }
     }
@@ -235,6 +257,7 @@ public class DataBase {
             stmt.executeUpdate(InsertCommandTeam2);
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
         }
     }
 
@@ -249,19 +272,34 @@ public class DataBase {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            reload();
             return false;
         }
     }
 
-    void updateRegion(boolean region, int sizeZpos, int sizeZneg, int sizeX, int lasttime) {
+    void updateRegion(boolean region, int sizeZpos, int sizeZneg, int sizeX, long lasttime) {
 
-        String UpdateCommand = "UPDATE region SET sizezpositive = " + sizeZpos + " , sizeznegative = " + sizeZneg + ", sizex = " + sizeX + ", lastime = " + lasttime + " WHERE team == " + region + ";";
+        String UpdateCommand = "UPDATE region SET sizezpositive = " + sizeZpos + " , sizeznegative = " + sizeZneg + ", sizex = " + sizeX + ", lasttime = " + lasttime + " WHERE team == " + region + ";";
         try {
             Statement stmt = this.connection.createStatement();
-            int countInserted = stmt.executeUpdate(UpdateCommand);
+            stmt.executeUpdate(UpdateCommand);
         } catch (SQLException ex) {
+            reload();
             ex.printStackTrace();
         }
     }
 
+    long getLastTime(boolean region) {
+        String SelectCommand = "SELECT * FROM region WHERE team == " + region + ";";
+        try {
+            Statement stmt = this.connection.createStatement();
+            ResultSet query = stmt.executeQuery(SelectCommand);
+            // get the number of rows from the result set
+            return query.getLong("lasttime");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            reload();
+            return 0;
+        }
+    }
 }

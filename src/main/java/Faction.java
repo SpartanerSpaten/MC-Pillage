@@ -16,6 +16,7 @@ public class Faction {
     int sizeXNegative = 250;
     int sizeZPositive = 250;
     int sizeZNegative = 250;
+    int sizeX;
 
     int spawnSizeX = 7;
     int middleX, middleZ, team;
@@ -24,6 +25,37 @@ public class Faction {
     int spawnSizeZ = 7;
     List<String> members;
     ArrayList<Player> onlineMembers;
+
+    public int getSizeZNegative() {
+        return sizeZNegative;
+    }
+
+    public void setSizeZNegative(int sizeZNegative) {
+        this.sizeZNegative = sizeZNegative;
+    }
+
+    public int getSizeZPositive() {
+        return sizeZPositive;
+    }
+
+    public void setSizeZPositive(int sizeZPositive) {
+        this.sizeZPositive = sizeZPositive;
+    }
+
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    public void setSizeX(int sizeX) {
+        this.sizeX = sizeX;
+        if (team == 2) {
+            sizeXPositive = 250;
+            sizeZNegative = sizeX;
+        } else {
+            sizeXPositive = sizeX;
+            sizeXNegative = 250;
+        }
+    }
 
     public Faction(int posx, int posz, int iTeam, MCPillagePlugin plugin) {
         middleX = posx;
@@ -49,13 +81,8 @@ public class Faction {
         try {
             sizeZPositive = set.getInt("sizezpositive");
             sizeZNegative = set.getInt("sizeznegative");
-            if (team == 2) {
-                sizeXPositive = 250;
-                sizeZNegative = set.getInt("sizex");
-            } else {
-                sizeXPositive = set.getInt("sizex");
-                sizeXNegative = 250;
-            }
+            sizeX = set.getInt("sizex");
+            setSizeX(sizeX);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

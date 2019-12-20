@@ -220,6 +220,38 @@ public class FactionCommand implements CommandExecutor {
 
             } else if (split[0].equalsIgnoreCase("extend")) {
                 if (this.plugin.db.getMemberRole(player.getUniqueId().toString()) == 2) {
+                    if (split.length < 2) {
+                        player.sendMessage("You have to give a direction in which the area should be extended. Give 1,2,3");
+                        return true;
+                    }
+
+                    int hisTeam = this.plugin.getMemberShip(player.getUniqueId​().toString());
+
+                    long lastTime = this.plugin.db.getLastTime(hisTeam == 1);
+                    long unixTime = System.currentTimeMillis() / 1000L;
+                    if (unixTime - lastTime < 604800) {
+                        player.sendMessage("You only can get an extension of your faction area every week");
+                        return true;
+                    }
+                    Faction tempFaction;
+
+                    if (hisTeam == 1) {
+                        tempFaction = this.plugin.factionTeam1;
+                    } else {
+                        tempFaction = this.plugin.factionTeam2;
+                    }
+
+                    //z pos, z neg, x, lasttime
+                    if (split[1].equalsIgnoreCase("zpos")) {
+                        this.plugin.db.updateRegion(hisTeam == 1, tempFaction.getSizeZPositive(), tempFaction.getSizeZNegative(), tempFaction.getSizeX(), unixTime);
+                        tempFaction.setSizeZPositive(tempFaction.getSizeZPositive() + 10);
+                    } else if (split[1].equalsIgnoreCase("zneg")) {
+                        this.plugin.db.updateRegion(hisTeam == 1, tempFaction.getSizeZPositive() + 10, tempFaction.getSizeZNegative() + 10, tempFaction.getSizeX(), unixTime);
+                        tempFaction.setSizeZNegative(tempFaction.getSizeZNegative() + 10);
+                    } else if (split[1].equalsIgnoreCase("x")) {
+                        this.plugin.db.updateRegion(hisTeam == 1, tempFaction.getSizeZPositive(), tempFaction.getSizeZNegative(), tempFaction.getSizeX() + 10, unixTime);
+                        tempFaction.setSizeX(tempFaction.getSizeX() + 10);
+                    }
 
 
                 } else {
