@@ -3,7 +3,7 @@ Minecraft faction plugin which is developed for two teams.
 
 ## Features
  + Temporal Build/ Break protection
- + Events
+ + Events with auto start
  + Factions
  + Basic Farmworlds
  + Egg Shop
@@ -21,6 +21,7 @@ Minecraft faction plugin which is developed for two teams.
         * spawn
         * forceadd <username> <team> (Op) # this member is automaticaly Lord
         * forceleader <username> <team> (Op) # Updates Role
+        * help
         
  + **/war** 
         
@@ -34,6 +35,7 @@ Minecraft faction plugin which is developed for two teams.
         * overworld
         * end
         * create <farm_world, farm_nether, farm_end> (Op)
+        * help
  
   + **/eggshop**
   

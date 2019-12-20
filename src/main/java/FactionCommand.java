@@ -47,26 +47,38 @@ public class FactionCommand implements CommandExecutor {
         player.getPlayer().setDisplayName(name);
         player.getPlayer().setCustomName(name);
         player.getPlayer().setCustomNameVisible(true);
-        // player.setJoinMessage(message);
 
     }
+
+    public String resolveName(int team) {
+        if (team == 1) {
+            return "§cCommunism";
+        }
+        return "§9Capitalism";
+    }
+
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] split) {
 
         Player player = (Player) sender;
         if (split.length > 0) {
             if (split[0].equalsIgnoreCase("spawn")) {
-                // Only Trigger Teleport Event Teleport Handler will figure it out where Player should go
-                World world = Bukkit.getServer().getWorld("world");
-                Location location = new Location(world, 0, 100, 0);
-                player.teleport(location);
+                if (this.plugin.eventManager.getWar() && player.getLocation().getWorld().getName().equalsIgnoreCase("world")) {
+                    player.sendMessage("You can only telelport when there is no war going on");
+                } else {
+                    // Only Trigger Teleport Event Teleport Handler will figure it out where Player should go
+                    World world = Bukkit.getServer().getWorld("world");
+                    Location location = new Location(world, 0, 100, 0);
+                    player.teleport(location);
+
+                }
 
             } else if (split[0].equalsIgnoreCase("members")) {
 
                 int hisTeam = this.plugin.getMemberShip(player.getUniqueId​().toString());
                 ArrayList<String> members = this.plugin.db.getMembersbyName(hisTeam);
 
-                player.sendMessage(this.plugin.teamColor.get(hisTeam - 1) + "§lMembers of Team " + hisTeam);
+                player.sendMessage(this.plugin.teamColor.get(hisTeam - 1) + "§lMembers of Team " + resolveName(hisTeam));
                 int role;
                 for (String name : members) {
                     role = this.plugin.db.getMemberRolebyName(name);
@@ -136,7 +148,7 @@ public class FactionCommand implements CommandExecutor {
             } else if (split[0].equalsIgnoreCase("forceadd") && player.isOp()) {
                 /*
                  This command should only be used for adding the two initial team leaders
-                 */
+                */
                 if (split.length > 1) {
 
                     String name = split[1];
@@ -206,6 +218,27 @@ public class FactionCommand implements CommandExecutor {
                     player.sendMessage("You don't have the permission too do that!");
                 }
 
+            } else if (split[0].equalsIgnoreCase("extend")) {
+                if (this.plugin.db.getMemberRole(player.getUniqueId().toString()) == 2) {
+
+
+                } else {
+                    player.sendMessage("You are not Lord you can not perform this command");
+                }
+            } else if (split[0].equalsIgnoreCase("help")) {
+
+                String helpMessage = "****** Faction Commands ****** \n"
+                        + "§lhelp§r : this command\n"
+                        + "§lspawn§r : teleports you too your faction spawn\n"
+                        + "§lmembers§r : list all members of your team\n"
+                        + "§ladd§r <username> : adds given player too your team\n"
+                        + "§lkick§r <username> : kicks given player from your team\n"
+                        + "§lpromote§r <username> <0,1,2> : Promotes / Demotes player";
+
+                player.sendMessage(helpMessage);
+
+            } else {
+                player.sendMessage("Unknown Command");
             }
 
         }

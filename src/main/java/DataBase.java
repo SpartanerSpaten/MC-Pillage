@@ -262,8 +262,6 @@ public class DataBase {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
     }
-
 
 }

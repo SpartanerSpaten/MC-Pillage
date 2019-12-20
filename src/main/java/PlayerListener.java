@@ -167,7 +167,7 @@ public class PlayerListener implements Listener {
                 posY = world.getHighestBlockYAt(posX + deviationX, deviationZ) + 1;
                 location = new Location(world, posX + deviationX, posY, posZ + deviationZ);
             } else {
-                location = new Location(world, posX + deviationX, desiredLoc.getY() + 3, posZ + deviationZ);
+                location = new Location(world, posX + deviationX + 0.5, desiredLoc.getY() + 3, posZ + deviationZ + 0.5);
                 Block temp = location.add(0, -1, 0).getBlock();
                 temp.setType(Material.AIR);
                 temp = location.add(0, -1, 0).getBlock();

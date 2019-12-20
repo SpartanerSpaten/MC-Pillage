@@ -74,6 +74,12 @@ public class FarmWorld implements CommandExecutor {
                 } else {
                     player.sendMessage("Not enough arguments");
                 }
+            } else if (split[0].equalsIgnoreCase("help")) {
+                String playerMessage = "****** Farmworld Commands ****** \n"
+                        + "§loverworld§r : Teleports you into the farm overworld\n"
+                        + "§lnether§r : Teleports you into the nether - A save place will be generated but be careful\n"
+                        + "§lend§r : Teleports you into the end\n";
+                player.sendMessage(playerMessage);
             }
         }
         return true;
