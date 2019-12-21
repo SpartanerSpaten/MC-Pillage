@@ -15,7 +15,7 @@ import java.util.HashMap;
  */
 public class MCPillagePlugin extends JavaPlugin {
 
-    public final DataBase db = new DataBase();
+    public final Database db = new Database();
     public final Faction factionTeam1 = new Faction(2500, 0, 1, this);
     public final Faction factionTeam2 = new Faction(-2500, 0, 2, this);
     public final EventManager eventManager = new EventManager(this);

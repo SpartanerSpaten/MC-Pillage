@@ -178,7 +178,7 @@ public class PlayerListener implements Listener {
 
             }
             event.setTo(location);
-        } else if (cause == PlayerTeleportEvent.TeleportCause.END_GATEWAY || cause == PlayerTeleportEvent.TeleportCause.END_PORTAL || cause == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
+        } else if (cause == PlayerTeleportEvent.TeleportCause.END_PORTAL || cause == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
             event.setCancelled(true);
         }
     }

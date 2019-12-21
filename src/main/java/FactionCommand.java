@@ -32,16 +32,22 @@ public class FactionCommand implements CommandExecutor {
 
     public void updateName(int team, int role, Player player) {
 
-        String teamColor = this.plugin.teamColor.get(team - 1);
         String name;
-        if (role == 2) {
-            name = teamColor + "Team" + team + "§r | §6" + player.getPlayer().getName() + "§r";
-        } else if (role == 1) {
-            name = teamColor + "Team" + team + "§r | §3" + player.getPlayer().getName() + "§r";
+        String factionString;
+        if (team == 1) {
+            factionString = "§cCOM";
         } else {
-            name = teamColor + "Team" + team + "§r | §a" + player.getPlayer().getName() + "§r";
+            factionString = "§9CAP";
         }
-        String message = "Welcome back §d§l" + player.getPlayer().getName() + "§r from " + teamColor + "Team" + team;
+
+        if (role == 2) {
+            name = factionString + "§r | §6" + player.getPlayer().getName() + "§r";
+        } else if (role == 1) {
+            name = factionString + "§r | §3" + player.getPlayer().getName() + "§r";
+        } else {
+            name = factionString + "§r | §a" + player.getPlayer().getName() + "§r";
+        }
+        String message = "Welcome back §d§l" + player.getPlayer().getName() + "§r from " + this.plugin.teamColor.get(team - 1) + "Team" + team;
 
         player.getPlayer().setPlayerListName(name);
         player.getPlayer().setDisplayName(name);

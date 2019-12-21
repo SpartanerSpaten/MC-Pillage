@@ -6,20 +6,20 @@ import java.sql.*;
 import java.util.ArrayList;
 
 
-public class DataBase {
+public class Database {
 
     // Database Stuff
     private Connection connection;
     private String host, database, username, password, file;
     private int port;
 
-    DataBase() {
+    Database() {
         host = "localhost";
         port = 3306;
         database = "mcpillage";
         username = "plugin";
         password = "secretpw";
-        file = "./testdb.db";
+        file = "./mcpillage.db";
 
         try {
             openConnection();
