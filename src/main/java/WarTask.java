@@ -12,7 +12,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 public class WarTask extends BukkitRunnable {
 
     public static MCPillagePlugin plugin;
-    static LocalTime time = LocalTime.of(20, 0, 0);
+    static LocalTime time = LocalTime.of(17, 15, 0);
     static java.time.DayOfWeek attackDay = DayOfWeek.SATURDAY;
     private static int lastAttacker = 1;
     public WarTask() {
@@ -35,12 +35,15 @@ public class WarTask extends BukkitRunnable {
         LocalDate localDate = LocalDate.now();
 
         if (attackDay == localDate.getDayOfWeek()) {
-
             if (plugin.eventManager.getWar()) {
                 return false;
             }
             long timeDifference = MINUTES.between(now, time);
-            plugin.eventManager.alarmPlayer(timeDifference);
+
+            if (timeDifference == 1 || timeDifference == 5 || timeDifference == 30 || timeDifference == 60) {
+                plugin.eventManager.alarmPlayer(timeDifference);
+            }
+
             Bukkit.getLogger().info("Time" + timeDifference);
             return Math.abs(timeDifference) < 1;
         }

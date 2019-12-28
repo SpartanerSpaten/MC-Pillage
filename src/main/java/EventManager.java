@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 public class EventManager {
 
-    private int nextAttackingTeam = -1;
+    private int nextAttackingTeam = 1;
     private int currentlyAttacking = -1;
     private LocalTime durationOfAttack = null;
     private LocalTime startOfAttack = null;
@@ -77,7 +77,7 @@ public class EventManager {
         if (currentlyAttacking == 1) {
             teamString = "§cTeam Communism";
         } else {
-            teamString = "§9RTeam Capitalism";
+            teamString = "§9Team Capitalism";
         }
 
         Bukkit.broadcastMessage("§b§k=== " + this.plugin.teamColor.get(currentlyAttacking - 1) + teamString + "§r Began to Attack §b§k===");
