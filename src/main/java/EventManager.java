@@ -103,7 +103,7 @@ public class EventManager {
         if (nextAttackingTeam == 1) {
             team = "§cTeam Communism";
         } else {
-            team = "§9RTeam Capitalism";
+            team = "§9Team Capitalism";
         }
 
         Bukkit.broadcastMessage("§b§k=== " + team + "§r Will attack in ~" + timeDifference + " Minutes §b§k===");
