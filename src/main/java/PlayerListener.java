@@ -21,7 +21,6 @@ public class PlayerListener implements Listener {
 
     public PlayerListener(MCPillagePlugin instance) {
         this.plugin = instance;
-
     }
 
 
@@ -38,29 +37,29 @@ public class PlayerListener implements Listener {
     public void onPlayJoin(PlayerJoinEvent playerJoinEvent) {
         int team = plugin.getMemberShip(playerJoinEvent.getPlayer().getUniqueId​().toString());
         int role;
-        String teamString, teamColor;
+        String teamString, factionString;
 
         if (team == 1) {
             role = plugin.factionTeam1.getRoleUUid(playerJoinEvent.getPlayer().getUniqueId().toString());
             plugin.factionTeam1.addOnlinePlayer(playerJoinEvent.getPlayer());
             teamString = "§cTeam Communism";
-            teamColor = "§c";
+            factionString = "§cCOM";
         } else if (team == 2) {
             role = plugin.factionTeam2.getRoleUUid(playerJoinEvent.getPlayer().getUniqueId().toString());
             plugin.factionTeam2.addOnlinePlayer(playerJoinEvent.getPlayer());
             teamString = "§9RTeam Capitalism";
-            teamColor = "§9";
+            factionString = "§9CAP";
         } else {
             playerJoinEvent.getPlayer().sendMessage("Pls Register your self with /faction forceadd <name> <team 1/2> other wise some function wont work");
             return;
         }
         String name;
         if (role == 2) {
-            name = teamColor + "Team" + team + "§r | §6" + playerJoinEvent.getPlayer().getName() + "§r";
+            name = factionString + "§r | §6" + playerJoinEvent.getPlayer().getName() + "§r";
         } else if (role == 1) {
-            name = teamColor + "Team" + team + "§r | §3" + playerJoinEvent.getPlayer().getName() + "§r";
+            name = factionString + "§r | §3" + playerJoinEvent.getPlayer().getName() + "§r";
         } else {
-            name = teamColor + "Team" + team + "§r | §a" + playerJoinEvent.getPlayer().getName() + "§r";
+            name = factionString + "§r | §a" + playerJoinEvent.getPlayer().getName() + "§r";
         }
         String message = "Welcome back §d§l" + playerJoinEvent.getPlayer().getName() + "§r from " + teamString;
 
@@ -87,13 +86,12 @@ public class PlayerListener implements Listener {
         } else if (team == 2) {
             plugin.factionTeam2.removeOnlinePlayer(event.getPlayer());
         }
-
     }
 
     @EventHandler
     public void onChatMessage(AsyncPlayerChatEvent event) {
         String prefix = "";
-        if (!event.getMessage().trim().substring(0, 3).equalsIgnoreCase("@a ")) {
+        if (event.getMessage().length() > 3 && !event.getMessage().trim().substring(0, 3).equalsIgnoreCase("@a ")) {
             prefix = "§7T | §r";
             int team = plugin.getMemberShip(event.getPlayer().getUniqueId​().toString());
             ArrayList<Player> receiver;
@@ -103,7 +101,6 @@ public class PlayerListener implements Listener {
             } else {
                 receiver = plugin.factionTeam2.getOnlineMembers();
             }
-
             event.getRecipients().removeIf(recipient -> !receiver.contains(recipient));
         }
         event.setFormat(prefix + event.getPlayer().getPlayerListName() + "§7: " + event.getMessage());

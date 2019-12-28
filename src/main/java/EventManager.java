@@ -7,6 +7,7 @@ import java.time.LocalTime;
 
 public class EventManager {
 
+    private int nextAttackingTeam = -1;
     private int currentlyAttacking = -1;
     private LocalTime durationOfAttack = null;
     private LocalTime startOfAttack = null;
@@ -14,7 +15,7 @@ public class EventManager {
     private final com.einspaten.bukkit.mcpillage.MCPillagePlugin plugin;
 
     private boolean war = false;
-    private int warduration = 3; // Mins
+    private int warduration = 30; // Mins
 
     public EventManager(com.einspaten.bukkit.mcpillage.MCPillagePlugin plugin) {
         this.plugin = plugin;
@@ -29,10 +30,14 @@ public class EventManager {
         return -1;
     }
 
-    private void checkForTimeout(){
-        if(war && startOfAttack != null && durationOfAttack != null){
+    public int getNextAttackingTeam() {
+        return nextAttackingTeam;
+    }
+
+    private void checkForTimeout() {
+        if (war && startOfAttack != null && durationOfAttack != null) {
             LocalTime now = LocalTime.now();
-            if(now.compareTo(durationOfAttack) > 0){
+            if (now.compareTo(durationOfAttack) > 0) {
                 stopWar();
             }
         }
@@ -76,15 +81,40 @@ public class EventManager {
         }
 
         Bukkit.broadcastMessage("§b§k=== " + this.plugin.teamColor.get(currentlyAttacking - 1) + teamString + "§r Began to Attack §b§k===");
-        Bukkit.broadcastMessage("Battel will end at: §d" + printEnd());
+        Bukkit.broadcastMessage("Battle will end at: §d" + printEnd());
     }
 
-    public boolean fightActive(int attacker){
+
+    void autoStart() {
+        startFight(nextAttackingTeam);
+        swapAttackingTeam();
+    }
+
+    void swapAttackingTeam() {
+        if (nextAttackingTeam == 1) {
+            nextAttackingTeam = 2;
+        } else {
+            nextAttackingTeam = 1;
+        }
+    }
+
+    void alarmPlayer(long timeDifference) {
+        String team;
+        if (nextAttackingTeam == 1) {
+            team = "§cTeam Communism";
+        } else {
+            team = "§9RTeam Capitalism";
+        }
+
+        Bukkit.broadcastMessage("§b§k=== " + team + "§r Will attack in ~" + timeDifference + " Minutes §b§k===");
+    }
+
+    public boolean fightActive(int attacker) {
         return attacker == currentlyAttacking;
     }
 
-    public String printEnd(){
-        if(war && durationOfAttack != null){
+    public String printEnd() {
+        if (war && durationOfAttack != null) {
             return durationOfAttack.toString();
         }
         return "There is no war currently.";

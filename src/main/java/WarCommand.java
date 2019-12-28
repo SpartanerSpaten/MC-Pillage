@@ -52,9 +52,19 @@ public class WarCommand implements CommandExecutor {
                     player.sendMessage("Currently Attacking: " + this.plugin.teamColor.get(currentlyAttacking - 1) + "Team" + currentlyAttacking);
                     player.sendMessage("War will end at: §d" + plugin.eventManager.printEnd());
                 } else {
-                    player.sendMessage("There is no war currently going on.");
-                }
+                    String teamString;
+                    int currentlyAttacking = plugin.eventManager.getNextAttackingTeam();
 
+                    if (currentlyAttacking == 1) {
+                        teamString = "§cTeam Communism";
+                    } else {
+                        teamString = "§9RTeam Capitalism";
+                    }
+
+                    player.sendMessage("The next attacking Team is " + teamString);
+                }
+            } else if (split[0].equalsIgnoreCase("set") && player.isOp()) {
+                plugin.eventManager.swapAttackingTeam();
             }
         } else {
             player.sendMessage("The command /war has following options start <teamID>, stop, info");

@@ -47,7 +47,6 @@ public class FactionCommand implements CommandExecutor {
         } else {
             name = factionString + "§r | §a" + player.getPlayer().getName() + "§r";
         }
-        String message = "Welcome back §d§l" + player.getPlayer().getName() + "§r from " + this.plugin.teamColor.get(team - 1) + "Team" + team;
 
         player.getPlayer().setPlayerListName(name);
         player.getPlayer().setDisplayName(name);

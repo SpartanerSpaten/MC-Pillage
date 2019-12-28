@@ -28,6 +28,7 @@ Minecraft faction plugin which is developed for two teams.
         * start <attacking_team> (Op)
         * stop (Op)
         * info
+        * set
  
  + **/farm**
  
