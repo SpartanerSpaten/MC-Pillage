@@ -91,7 +91,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onChatMessage(AsyncPlayerChatEvent event) {
         String prefix = "";
-        if (event.getMessage().length() > 3 && !event.getMessage().trim().substring(0, 3).equalsIgnoreCase("@a ")) {
+        if (event.getMessage().length() < 3 || !event.getMessage().trim().substring(0, 3).equalsIgnoreCase("@a ")) {
             prefix = "§7T | §r";
             int team = plugin.getMemberShip(event.getPlayer().getUniqueId​().toString());
             ArrayList<Player> receiver;

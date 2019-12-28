@@ -1,6 +1,5 @@
 package com.einspaten.bukkit.mcpillage;
 
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.DayOfWeek;
@@ -44,7 +43,6 @@ public class WarTask extends BukkitRunnable {
                 plugin.eventManager.alarmPlayer(timeDifference);
             }
 
-            Bukkit.getLogger().info("Time" + timeDifference);
             return Math.abs(timeDifference) < 1;
         }
 
