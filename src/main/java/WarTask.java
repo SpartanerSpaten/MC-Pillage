@@ -11,7 +11,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 public class WarTask extends BukkitRunnable {
 
     public static MCPillagePlugin plugin;
-    static LocalTime time = LocalTime.of(17, 15, 0);
+    static LocalTime time = LocalTime.of(21, 45, 0);
     static java.time.DayOfWeek attackDay = DayOfWeek.SATURDAY;
     private static int lastAttacker = 1;
     public WarTask() {
