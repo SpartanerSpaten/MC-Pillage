@@ -2,14 +2,16 @@ package com.einspaten.bukkit.mcpillage;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
-
-import java.util.ArrayList;
-import java.util.Random;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.*;
 
 /**
  * Handle events for all Player related events
@@ -23,104 +25,195 @@ public class PlayerListener implements Listener {
         this.plugin = instance;
     }
 
-
-    @EventHandler
-    public void playerInteract(PlayerInteractEvent playerInteractEvent) {
-        if (playerInteractEvent.hasBlock() && playerInteractEvent.getClickedBlock().getType() == Material.ENDER_CHEST) {
-            if (playerInteractEvent.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                playerInteractEvent.setCancelled(true);
-            }
-        }
+    private void giveStarterStuff(Inventory player_inv) {
+        // Starter Gear
+        player_inv.addItem(new ItemStack(Material.IRON_SWORD));
+        player_inv.addItem(new ItemStack(Material.STONE_PICKAXE));
+        player_inv.addItem(new ItemStack(Material.STONE_AXE));
+        player_inv.addItem(new ItemStack(Material.STONE_SHOVEL));
+        player_inv.addItem(new ItemStack(Material.BREAD, 32));
+        player_inv.addItem(new ItemStack(Material.LEATHER_CHESTPLATE));
+        player_inv.addItem(new ItemStack(Material.LEATHER_BOOTS));
+        player_inv.addItem(new ItemStack(Material.LEATHER_HELMET));
+        player_inv.addItem(new ItemStack(Material.LEATHER_LEGGINGS));
     }
+
+    Block getChest(Sign sign) {
+
+        if (sign.getBlock().getRelative(BlockFace.NORTH).getType() == Material.CHEST) {
+            return sign.getBlock().getRelative(BlockFace.NORTH);
+        } else if (sign.getBlock().getRelative(BlockFace.EAST).getType() == Material.CHEST) {
+            return sign.getBlock().getRelative(BlockFace.EAST);
+        } else if (sign.getBlock().getRelative(BlockFace.SOUTH).getType() == Material.CHEST) {
+            return sign.getBlock().getRelative(BlockFace.SOUTH);
+        } else if (sign.getBlock().getRelative(BlockFace.WEST).getType() == Material.CHEST) {
+            return sign.getBlock().getRelative(BlockFace.WEST);
+        }
+        return null;
+    }
+
+    boolean isSign(Material material) {
+        return material == Material.OAK_WALL_SIGN || material == Material.SPRUCE_WALL_SIGN || material == Material.DARK_OAK_WALL_SIGN || material == Material.ACACIA_WALL_SIGN || material == Material.BIRCH_WALL_SIGN || material == Material.JUNGLE_WALL_SIGN;
+    }
+
 
     @EventHandler
     public void onPlayJoin(PlayerJoinEvent playerJoinEvent) {
-        int team = plugin.getMemberShip(playerJoinEvent.getPlayer().getUniqueId​().toString());
-        int role;
-        String teamString, factionString;
 
-        if (team == 1) {
-            role = plugin.factionTeam1.getRoleUUid(playerJoinEvent.getPlayer().getUniqueId().toString());
-            plugin.factionTeam1.addOnlinePlayer(playerJoinEvent.getPlayer());
-            teamString = "§cTeam Communism";
-            factionString = "§cCOM";
-        } else if (team == 2) {
-            role = plugin.factionTeam2.getRoleUUid(playerJoinEvent.getPlayer().getUniqueId().toString());
-            plugin.factionTeam2.addOnlinePlayer(playerJoinEvent.getPlayer());
-            teamString = "§9RTeam Capitalism";
-            factionString = "§9CAP";
-        } else {
-            playerJoinEvent.getPlayer().sendMessage("Pls Register your self with /faction forceadd <name> <team 1/2> other wise some function wont work");
-            return;
+        String username = playerJoinEvent.getPlayer().getName();
+        String user_uuid = playerJoinEvent.getPlayer().getUniqueId().toString();
+
+        Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+        Objective obj = board.registerNewObjective("MC-Pillage", "dummy", "§4§oMC-Pillage");
+        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        Score money = obj.getScore(ChatColor.GRAY + "» Money: ");
+        money.setScore(1);
+
+        Team moneyCounter = board.registerNewTeam("moneyCounter");
+        moneyCounter.addEntry(ChatColor.RED + "" + ChatColor.WHITE);
+        moneyCounter.setPrefix(ChatColor.GREEN + "$" + 1);
+        obj.getScore(ChatColor.RED + "" + ChatColor.WHITE).setScore(0);
+
+        if (!this.plugin.db.existsInDB(user_uuid)) {
+            Bukkit.getLogger().info("Adding User: " + username);
+            this.plugin.db.addPlayer(username, user_uuid);
+            playerJoinEvent.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "xxx" + ChatColor.RESET + ChatColor.GRAY + "Welcome on the MC-Pillage City Server !");
+            giveStarterStuff(playerJoinEvent.getPlayer().getInventory());
         }
+
+        this.plugin.addPlayer(user_uuid);
+        com.einspaten.bukkit.mcpillage.PluginPlayer player = this.plugin.getPlayer(user_uuid);
+
+        player.setMoney_team(moneyCounter);
+        player.increaseMoney(0); //Just updates
+        playerJoinEvent.getPlayer().setScoreboard(board);
+
         String name;
-        if (role == 2) {
-            name = factionString + "§r | §6" + playerJoinEvent.getPlayer().getName() + "§r";
-        } else if (role == 1) {
-            name = factionString + "§r | §3" + playerJoinEvent.getPlayer().getName() + "§r";
+        if (playerJoinEvent.getPlayer().isOp()) { // Admin
+            name = ChatColor.RED + username + ChatColor.RESET;
+        } else if (player.getRole() == 1) { // Moderator
+            name = ChatColor.DARK_GREEN + username + ChatColor.RESET;
         } else {
-            name = factionString + "§r | §a" + playerJoinEvent.getPlayer().getName() + "§r";
+            name = ChatColor.AQUA + username + ChatColor.RESET;
         }
-        String message = "Welcome back §d§l" + playerJoinEvent.getPlayer().getName() + "§r from " + teamString;
-
         playerJoinEvent.getPlayer().setPlayerListName(name);
         playerJoinEvent.getPlayer().setDisplayName(name);
         playerJoinEvent.getPlayer().setCustomName(name);
         playerJoinEvent.getPlayer().setCustomNameVisible(true);
-        playerJoinEvent.setJoinMessage(message);
+
+        playerJoinEvent.setJoinMessage(ChatColor.GRAY + "Player " + playerJoinEvent.getPlayer().getDisplayName() + ChatColor.GRAY + " Joined the Server");
+
+        if (this.plugin.db.daily_reward(user_uuid)) {
+            player.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "xxx" + ChatColor.GRAY + "You received your daily transaction of " + ChatColor.GREEN + "200 $");
+            player.increaseMoney(200);
+            this.plugin.db.setMoney(user_uuid, 200);
+        }
+
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-
-        if (!plugin.eventManager.getWar()) {
-            Player player = event.getPlayer();
-            World world = Bukkit.getServer().getWorld("world");
-            Location location = new Location(world, 0, 100, 0);
-            player.teleport(location);
-        }
-
-        int team = plugin.getMemberShip(event.getPlayer().getUniqueId​().toString());
-        if (team == 1) {
-            plugin.factionTeam1.removeOnlinePlayer(event.getPlayer());
-        } else if (team == 2) {
-            plugin.factionTeam2.removeOnlinePlayer(event.getPlayer());
-        }
+        this.plugin.removePlayer(event.getPlayer().getUniqueId().toString());
+        event.setQuitMessage(ChatColor.GRAY + "Player " + event.getPlayer().getDisplayName() + ChatColor.GRAY + " Left the Server");
     }
 
     @EventHandler
     public void onChatMessage(AsyncPlayerChatEvent event) {
-        String prefix = "";
-        if (event.getMessage().length() < 3 || !event.getMessage().trim().substring(0, 3).equalsIgnoreCase("@a ")) {
-            prefix = "§7T | §r";
-            int team = plugin.getMemberShip(event.getPlayer().getUniqueId​().toString());
-            ArrayList<Player> receiver;
+        event.setFormat(event.getPlayer().getPlayerListName() + "§7 | " + event.getMessage());
+    }
 
-            if (team == 1) {
-                receiver = plugin.factionTeam1.getOnlineMembers();
+    @EventHandler
+    public void playerInteract(PlayerInteractEvent event) {
+        if (event.hasBlock()) {
+            Material material = event.getClickedBlock().getType();
+            if (isSign(material) && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                Sign sign = (Sign) event.getClickedBlock().getState();
+
+                String[] lines = sign.getLines();
+                Material desired_material;
+                int price, amount;
+                String target_player_uuid;
+                try {
+                    desired_material = Material.getMaterial(lines[0]);
+                    price = Integer.parseInt(lines[1]);
+                    amount = Integer.parseInt(lines[2]);
+                    target_player_uuid = this.plugin.db.resolveUsername(lines[3]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
+                if (target_player_uuid == null || desired_material == null || price < 0 || amount < 0) { // Not found in database or invalid material id
+                    return;
+                }
+
+                com.einspaten.bukkit.mcpillage.PluginPlayer plugin_player = this.plugin.getPlayer(event.getPlayer().getUniqueId().toString());
+                if (plugin_player.getMoney() <= price) {
+                    event.getPlayer().sendMessage(ChatColor.GRAY + "You don't have enough money too perform this transaction.");
+                    return;
+                }
+                Block expected_chest = getChest(sign);
+
+                ItemStack stack = new ItemStack(desired_material, amount);
+                com.einspaten.bukkit.mcpillage.PluginPlayer other_plugin_player = this.plugin.getPlayer(target_player_uuid);
+                Inventory chest_inv;
+
+                if (expected_chest == null) {
+                    return;
+                }
+
+                if (expected_chest.getType() == Material.CHEST) {
+                    Chest chest = (Chest) expected_chest.getState();
+                    chest_inv = chest.getBlockInventory();
+                } else {
+                    return;
+                }
+
+                if (chest_inv.containsAtLeast(stack, 1)) { // Does contain desired item stack
+                    chest_inv.removeItem(stack);
+                    event.getPlayer().getInventory().addItem(stack);
+                } else {
+                    event.getPlayer().sendMessage(ChatColor.GRAY + "This shop is out of stock");
+                    return;
+                }
+                if (other_plugin_player != null) {
+                    // Is only called when other player is online
+                    other_plugin_player.increaseMoney(price);
+                    other_plugin_player.sendMessage(ChatColor.GRAY + "You received a transaction " + ChatColor.GREEN + "$" + price + ChatColor.GRAY + " worth from " + ChatColor.DARK_RED + event.getPlayer().getName());
+                }
+
+                plugin_player.increaseMoney(-1 * price); // Updates scoreboard
+
+                // Writes Database
+                this.plugin.db.setMoney(target_player_uuid, price);
+                this.plugin.db.setMoney(event.getPlayer().getUniqueId().toString(), -1 * price);
+
+                event.getPlayer().sendMessage(ChatColor.GRAY + "Transaction successful paid " + ChatColor.GREEN + price + "$" + ChatColor.GRAY + " for " + amount + " " + desired_material);
+
             } else {
-                receiver = plugin.factionTeam2.getOnlineMembers();
+
+                Location location = event.getClickedBlock().getLocation();
+
+                if (location.getWorld().getName().equalsIgnoreCase("world")) {
+                    if (!this.plugin.getPlayer(event.getPlayer().getUniqueId().toString()).onMyPlot((int) location.getX(), (int) location.getZ()) && !event.getPlayer().isOp()) {
+                        event.setCancelled(true);
+                    }
+                } else {
+                    if (location.getX() < 10 && location.getX() > -10 && location.getZ() < 10 && location.getZ() > -10 && !event.getPlayer().isOp()) {
+                        event.setCancelled(true);
+                    }
+                }
             }
-            event.getRecipients().removeIf(recipient -> !receiver.contains(recipient));
+
         }
-        event.setFormat(prefix + event.getPlayer().getPlayerListName() + "§7: " + event.getMessage());
     }
 
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
-        int team = plugin.getMemberShip(event.getPlayer().getUniqueId​().toString());
         World world = Bukkit.getServer().getWorld("world");
-        if (team == 1) {
-            int topY = world.getHighestBlockYAt(this.plugin.factionTeam1.getMiddleX(), this.plugin.factionTeam1.getMiddleZ()) + 1;
-            Location location = new Location(world, this.plugin.factionTeam1.getMiddleX(), topY, this.plugin.factionTeam1.getMiddleZ());
-            event.setRespawnLocation(location);
-
-        } else if (team == 2) {
-            int topY = world.getHighestBlockYAt(this.plugin.factionTeam2.getMiddleX(), this.plugin.factionTeam2.getMiddleZ()) + 1;
-            Location location = new Location(world, this.plugin.factionTeam2.getMiddleX(), topY, this.plugin.factionTeam2.getMiddleZ());
-            event.setRespawnLocation(location);
-        }
+        Location location = new Location(world, 0, world.getHighestBlockYAt(0, 0), 0);
+        event.setRespawnLocation(location);
     }
 
 
@@ -128,54 +221,7 @@ public class PlayerListener implements Listener {
     public void onTeleportation(PlayerTeleportEvent event) {
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
 
-        if (cause == PlayerTeleportEvent.TeleportCause.COMMAND || cause == PlayerTeleportEvent.TeleportCause.PLUGIN) {
-
-            if (event.getPlayer().isOp() && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
-                return;
-            }
-
-            // Tries too catch if
-            Location desiredLoc = event.getTo();
-            //if(desiredLoc.getWorld().getName().equalsIgnoreCase("world")){
-            Player player = event.getPlayer();
-            int team = plugin.getMemberShip(event.getPlayer().getUniqueId​().toString());
-            World world = desiredLoc.getWorld();
-            int deviationX = 0;
-            int deviationZ = 0;
-            int posX, posZ, posY;
-            if (team == 1) {
-                posX = 2500;
-            } else {
-                posX = -2500;
-            }
-            posZ = 0;
-            if (!world.getName().equalsIgnoreCase("world")) {
-                Random random = new Random();
-                deviationX = random.nextInt() % 50;
-                deviationZ = random.nextInt() % 50;
-            }
-
-            if (world.getName().equalsIgnoreCase("farm_end")) {
-                posX = 0;
-                posZ = 0;
-            }
-            Location location;
-            if (!world.getName().equalsIgnoreCase("farm_nether")) {
-                posY = world.getHighestBlockYAt(posX + deviationX, deviationZ) + 1;
-                location = new Location(world, posX + deviationX, posY, posZ + deviationZ);
-            } else {
-                location = new Location(world, posX + deviationX + 0.5, desiredLoc.getY() + 3, posZ + deviationZ + 0.5);
-                Block temp = location.add(0, -1, 0).getBlock();
-                temp.setType(Material.AIR);
-                temp = location.add(0, -1, 0).getBlock();
-                temp.setType(Material.AIR);
-                temp = location.add(0, -1, 0).getBlock();
-                temp.setType(Material.NETHERRACK);
-                location.add(0, 1, 0);
-
-            }
-            event.setTo(location);
-        } else if (cause == PlayerTeleportEvent.TeleportCause.END_PORTAL || cause == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
+        if (cause == PlayerTeleportEvent.TeleportCause.END_PORTAL || cause == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
             event.setCancelled(true);
         }
     }

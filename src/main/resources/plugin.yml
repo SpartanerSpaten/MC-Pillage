@@ -7,15 +7,21 @@ authors:
   - Use-To
 website: https://github.com/SpartanerSpaten/MC-Pillage
 commands:
-  war:
-    description: Base Command for starting stoping and inforamtion about wars.
-    usage: /war <start, stop, info>
-  faction:
-    description: Base Commands for managing factions
-    usage: /factions <add, kick, promote, forceleader, forceadd>
   farm:
     description: Teleports Player into the given Farmworld Dimension or Creates a new requires Op rights
     usage: /farm <overworld, nether, end, create>
   eggshop:
     description: Lets player buy spawn eggs
     usage: /shop
+  home:
+    description: teleports player to his home
+    usage: /home <set>
+  city:
+    description: Plot managment
+    usage: /city <buy>
+  money:
+    description: Money Command
+    usage: /money <pay>
+  plot:
+    description: Command for plot things
+    usage: /plot [buy, add, remove, sell]

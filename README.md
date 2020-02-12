@@ -12,24 +12,17 @@ Minecraft faction plugin which is developed for two teams.
  - (Op) ... Operator Rights
  - (Lord) ... Lord Role
  - (Lieutenant) ... Lieutenant Role
- + **/faction**
-        
-        * add <username> (Lieutenant)
-        * kick <username> (Lieutenant)
-        * promote <username> (Lord) # There only two roles so it also works as demote
-        * members
-        * spawn
-        * forceadd <username> <team> (Op) # this member is automaticaly Lord
-        * forceleader <username> <team> (Op) # Updates Role
-        * help
-        
- + **/war** 
-        
-        * start <attacking_team> (Op)
-        * stop (Op)
-        * info
-        * set
+ + **/city**
  
+        * spawn
+        * buy <size, pos_x, pos_z>
+        * add <username>
+        * remove <username>
+        
+ + **/home** 
+        
+        * set
+
  + **/farm**
  
         * nether
@@ -43,7 +36,7 @@ Minecraft faction plugin which is developed for two teams.
         * <see /eggshop lists you all available spawneggs>
         
               
-**Note** that the teleportation commands works differently for Player with op rights and in creative mode.
+**Note** that the teleportation commands works differently for PluginPlayer with op rights and in creative mode.
 
 
  ## Change Log

@@ -1,10 +1,7 @@
 package com.einspaten.bukkit.mcpillage;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
-import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,6 +17,9 @@ public class FarmWorld implements CommandExecutor {
 
     public FarmWorld(MCPillagePlugin plugin) {
         this.plugin = plugin;
+        createWorld("farm_end");
+        createWorld("farm_nether");
+        createWorld("farm_world");
     }
 
     public static boolean deleteDirectory(File dir) {
@@ -39,7 +39,6 @@ public class FarmWorld implements CommandExecutor {
         return dir.delete();
     }
 
-
     public boolean onCommand(CommandSender sender, Command command, String label, String[] split) {
         Player player = (Player) sender;
 
@@ -47,46 +46,61 @@ public class FarmWorld implements CommandExecutor {
             if (split[0].equalsIgnoreCase("nether")) {
                 World world = Bukkit.getServer().getWorld("farm_nether");
                 if (world == null) {
-                    createWorld("farm_nether", player);
-                    world = Bukkit.getServer().getWorld("farm_nether");
+                    player.sendMessage(ChatColor.RED + "ERROR: World not found pls contact a system admin");
+                    return true;
                 }
                 Location location = new Location(world, 0, 100, 0);
                 player.teleport(location);
             } else if (split[0].equalsIgnoreCase("end")) {
                 World world = Bukkit.getServer().getWorld("farm_end");
                 if (world == null) {
-                    createWorld("farm_end", player);
-                    world = Bukkit.getServer().getWorld("farm_end");
+                    player.sendMessage(ChatColor.RED + "ERROR: World not found pls contact a system admin");
+                    return true;
                 }
-                Location location = new Location(world, 0, 100, 0);
+                Location location = new Location(world, 0, world.getHighestBlockYAt(0, 0) + 1, 0);
                 player.teleport(location);
             } else if (split[0].equalsIgnoreCase("overworld")) {
                 World world = Bukkit.getServer().getWorld("farm_world");
                 if (world == null) {
-                    createWorld("farm_world", player);
-                    world = Bukkit.getServer().getWorld("farm_world");
+                    player.sendMessage("World not found pls contact a system admin");
+                    return true;
                 }
-                Location location = new Location(world, 0, 100, 0);
+                Location location = new Location(world, 0, world.getHighestBlockYAt(0, 0) + 1, 0);
                 player.teleport(location);
             } else if (split[0].equalsIgnoreCase("create") && player.isOp()) {
                 if (split.length > 1) {
-                    createWorld(split[1], player);
+                    save_players(split[1]); // Teleports players
+                    createWorld(split[1]); // Deletes world file and creates new one
                 } else {
                     player.sendMessage("Not enough arguments");
                 }
-            } else if (split[0].equalsIgnoreCase("help")) {
-                String playerMessage = "****** Farmworld Commands ****** \n"
-                        + "§loverworld§r : Teleports you into the farm overworld\n"
-                        + "§lnether§r : Teleports you into the nether - A save place will be generated but be careful\n"
-                        + "§lend§r : Teleports you into the end\n";
+            } else {
+                String playerMessage = ChatColor.GRAY + "Farm World Help Page \n"
+                        + " * /farm overworld Teleports you into the farm overworld\n"
+                        + " * /farm nether : Teleports you into the nether \n"
+                        + " * /farm end: Teleports you into the end\n";
                 player.sendMessage(playerMessage);
             }
         }
         return true;
     }
 
-    public boolean createWorld(String name, Player player) {
-        player.sendMessage(name);
+    private void save_players(String name) {
+
+        // Teleports player out of farm world when resettet
+        World world = Bukkit.getWorld(name);
+        World build_world = Bukkit.getWorld("world");
+        if (world != null && build_world != null) {
+            int y = build_world.getHighestBlockYAt(0, 0);
+            for (Player player : world.getPlayers()) {
+                player.sendMessage(ChatColor.GRAY + "Duo a reset of the world you are in we teleport you too the build world spawn !");
+                player.teleport(new Location(world, 0, y, 0));
+            }
+        }
+    }
+
+
+    public boolean createWorld(String name) {
 
         deleteWorld(name);
 
@@ -104,7 +118,10 @@ public class FarmWorld implements CommandExecutor {
 
         Bukkit.getServer().unloadWorld(name, false);
         World w = Bukkit.getServer().createWorld(wc);
-        w.setAutoSave(true);
+        if (w != null) {
+            w.setAutoSave(true);
+        }
+
         Bukkit.broadcastMessage("§b§k=== §r Recreating world: " + name + " §b§k=== ");
 
         return true;
