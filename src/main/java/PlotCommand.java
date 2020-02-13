@@ -30,7 +30,7 @@ public class PlotCommand implements CommandExecutor {
         plugin_player.increaseMoney(-1 * price);
         this.plugin.db.setMoney(owner_uuid, -1 * price);
         // Todo: Charge Price
-        return ChatColor.GRAY + "Successfully bought plot for " + ChatColor.GREEN + " $";
+        return ChatColor.GRAY + "Successfully bought plot for " + ChatColor.GREEN + price + " $";
     }
 
 

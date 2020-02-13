@@ -135,25 +135,20 @@ public class BlockListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Location location = event.getBlock().getLocation();
-        if (!event.getPlayer().isOp()) {
-            if (event.getBlock().getWorld().getName().equalsIgnoreCase("world")) {
+        if (event.getBlock().getWorld().getName().equalsIgnoreCase("world")) {
 
-                if (!this.plugin.getPlayer(event.getPlayer().getUniqueId().toString()).onMyPlot((int) location.getX(), (int) location.getZ())) {
-                    if (event.getPlayer().isOp()) {
-                        event.getPlayer().sendMessage(ChatColor.GRAY + "You are not on your plot !");
-                    } else {
-                        event.setCancelled(true);
-                    }
-                }
-            } else {
-                if (location.getX() < 10 && location.getX() > -10 && location.getZ() < 10 && location.getZ() < -10) {
-                    event.setCancelled(!event.getPlayer().isOp());
+            if (!this.plugin.getPlayer(event.getPlayer().getUniqueId().toString()).onMyPlot((int) location.getX(), (int) location.getZ())) {
+                if (event.getPlayer().isOp()) {
+                    event.getPlayer().sendMessage(ChatColor.GRAY + "You are not on your plot !");
+                } else {
+                    event.setCancelled(true);
                 }
             }
         } else {
-            event.getPlayer().sendMessage(ChatColor.GRAY + "You a");
+            if (location.getX() < 10 && location.getX() > -10 && location.getZ() < 10 && location.getZ() < -10) {
+                event.setCancelled(!event.getPlayer().isOp());
+            }
         }
-
     }
 
     @EventHandler
