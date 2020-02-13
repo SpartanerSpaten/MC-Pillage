@@ -21,7 +21,7 @@ public class HomeCommand implements CommandExecutor {
         com.einspaten.bukkit.mcpillage.PluginPlayer plugin_player = this.plugin.getPlayer(player.getUniqueId().toString());
 
         if (split.length > 0 && split[0].equalsIgnoreCase("set")) {
-            if (player.getLocation().getWorld().getName().equalsIgnoreCase("world")) {
+            if (!player.getLocation().getWorld().getName().equalsIgnoreCase("world")) {
                 player.sendMessage(ChatColor.GRAY + "You only can set your home point in the build world !");
                 return false;
             }
