@@ -74,8 +74,15 @@ public class FarmWorld implements CommandExecutor {
                 player.teleport(location);
             } else if (split[0].equalsIgnoreCase("create") && player.isOp()) {
                 if (split.length > 1) {
-                    save_players(split[1]); // Teleports players
-                    createWorld(split[1]); // Deletes world file and creates new one
+
+                    if (!split[1].equalsIgnoreCase("world")) {
+                        save_players(split[1]); // Teleports players
+                        deleteWorld(split[1]);
+                        createWorld(split[1]); // Deletes world file and creates new one
+                    } else {
+                        player.sendMessage(ChatColor.GRAY + "Not even op players can delete the build world !");
+                    }
+
                 } else {
                     player.sendMessage("Not enough arguments");
                 }
@@ -106,7 +113,7 @@ public class FarmWorld implements CommandExecutor {
 
     public boolean createWorld(String name) {
 
-        deleteWorld(name);
+        // If the world already exists we load it.
 
         WorldCreator wc = new WorldCreator(name);
         long myseed = new Random().nextLong();
