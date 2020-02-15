@@ -1,6 +1,5 @@
 package com.einspaten.bukkit.mcpillage;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -27,10 +26,14 @@ public class PlotCommand implements CommandExecutor {
         this.plugin.db.addPlot(new_plot, owner_uuid, true);
 
         int price = (int) (Math.log(size * size) * 100);
-        plugin_player.increaseMoney(-1 * price);
-        this.plugin.db.setMoney(owner_uuid, -1 * price);
-        // Todo: Charge Price
-        return ChatColor.GRAY + "Successfully bought plot for " + ChatColor.GREEN + price + " $";
+
+        if (plugin_player.getMoney() > price) {
+            plugin_player.increaseMoney(-1 * price);
+            this.plugin.db.setMoney(owner_uuid, -1 * price);
+            return ChatColor.GRAY + "Successfully bought plot for " + ChatColor.GREEN + price + " $";
+        } else {
+            return ChatColor.GRAY + "You don't have enough money ti buy this plot.";
+        }
     }
 
 
@@ -95,7 +98,6 @@ public class PlotCommand implements CommandExecutor {
     private String sellPlot(String owner_uuid, int pos_x, int pos_z, boolean operator) {
         com.einspaten.bukkit.mcpillage.PluginPlayer plugin_player = this.plugin.getPlayer(owner_uuid);
         Plot this_plot = plugin_player.getPlot(pos_x, pos_z);
-        Bukkit.broadcastMessage("Owner" + this_plot.getOwner() + "op:" + operator);
         if (this_plot == null) {
             return ChatColor.GRAY + "You are not staying on one of your plots";
         }
