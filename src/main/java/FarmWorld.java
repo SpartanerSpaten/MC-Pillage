@@ -13,6 +13,11 @@ import java.util.Random;
 
 public class FarmWorld implements CommandExecutor {
 
+    private static String playerMessage = ChatColor.GRAY + "Farm World Help Page \n"
+            + " * /farm overworld Teleports you into the farm overworld\n"
+            + " * /farm nether : Teleports you into the nether \n"
+            + " * /farm end: Teleports you into the end\n";
+
     private final MCPillagePlugin plugin;
 
     public FarmWorld(MCPillagePlugin plugin) {
@@ -75,12 +80,11 @@ public class FarmWorld implements CommandExecutor {
                     player.sendMessage("Not enough arguments");
                 }
             } else {
-                String playerMessage = ChatColor.GRAY + "Farm World Help Page \n"
-                        + " * /farm overworld Teleports you into the farm overworld\n"
-                        + " * /farm nether : Teleports you into the nether \n"
-                        + " * /farm end: Teleports you into the end\n";
+
                 player.sendMessage(playerMessage);
             }
+        } else {
+            player.sendMessage(playerMessage);
         }
         return true;
     }

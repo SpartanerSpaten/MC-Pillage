@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 
 public class MoneyCommand implements CommandExecutor {
 
+    private static String help_page = ChatColor.GRAY + "Money Help Page \n"
+            + " * /money pay [username] [amount]";
+
     private final MCPillagePlugin plugin;
 
     public MoneyCommand(MCPillagePlugin plugin) {
@@ -94,9 +97,10 @@ public class MoneyCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.GRAY + "Gave " + ChatColor.DARK_RED + split[1] + " " + ChatColor.GREEN + "$" + amount);
 
             } else {
-                player.sendMessage(ChatColor.GRAY + "Commands");
-                player.sendMessage(ChatColor.GRAY + " * /pay [username] [amount]");
+                player.sendMessage(help_page);
             }
+        } else {
+            player.sendMessage(help_page);
         }
         return true;
     }

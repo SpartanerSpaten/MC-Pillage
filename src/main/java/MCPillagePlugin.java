@@ -59,7 +59,7 @@ public class MCPillagePlugin extends JavaPlugin {
         com.einspaten.bukkit.mcpillage.FarmWorld farm_world = new com.einspaten.bukkit.mcpillage.FarmWorld(this);
 
         getCommand("farm").setExecutor(farm_world);
-        getCommand("eggshop").setExecutor(new ShopClass(this));
+        getCommand("shop").setExecutor(new ShopClass(this));
         getCommand("home").setExecutor(new HomeCommand(this));
         getCommand("city").setExecutor(new CityCommand(this));
         getCommand("money").setExecutor(new com.einspaten.bukkit.mcpillage.MoneyCommand(this));

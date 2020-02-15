@@ -158,6 +158,20 @@ public class Database {
         }
     }
 
+    private String getUsername(String uuid) {
+        String SelectCommand = "SELECT name FROM users WHERE uuid == '" + uuid + "';";
+        try {
+            Statement stmt = this.connection.createStatement();
+            ResultSet query_user = stmt.executeQuery(SelectCommand);
+            return query_user.getString("name");
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            reload();
+        }
+        return "";
+    }
+
 
     public boolean daily_reward(String uuid) {
         String SelectCommand = "SELECT daily_reward FROM users WHERE uuid == '" + uuid + "';";
@@ -262,6 +276,31 @@ public class Database {
         }
         return null;
     }
+
+    public String getOwner(int pos_x, int pos_z) {
+        String SelectCommand = "SELECT uuid FROM plot WHERE"
+                + " pos_x + size > " + pos_x
+                + " AND pos_x - size - 1< " + pos_x
+                + " AND pos_z + size > " + pos_z
+                + " AND pos_z - size - 1 < " + pos_z
+                + " AND owner == True;";
+        try {
+            Statement stmt = this.connection.createStatement();
+            ResultSet query_plot = stmt.executeQuery(SelectCommand);
+
+            String uuid = query_plot.getString("uuid");
+            return getUsername(uuid);
+
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            reload();
+        }
+        return "";
+
+
+    }
+
 
     public ArrayList<Plot> loadPlot(String uuid) {
         String get_all_plots = "SELECT pos_x, pos_z, size, owner FROM plot WHERE uuid == '" + uuid + "';";

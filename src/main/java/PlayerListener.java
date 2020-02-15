@@ -80,6 +80,8 @@ public class PlayerListener implements Listener {
             this.plugin.db.addPlayer(username, user_uuid);
             playerJoinEvent.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "xxx" + ChatColor.RESET + ChatColor.GRAY + "Welcome on the MC-Pillage City Server !");
             giveStarterStuff(playerJoinEvent.getPlayer().getInventory());
+            World world = Bukkit.getWorld("world");
+            playerJoinEvent.getPlayer().teleport(new Location(world, 0, world.getHighestBlockYAt(0, 0), 0));
         }
 
         this.plugin.addPlayer(user_uuid);

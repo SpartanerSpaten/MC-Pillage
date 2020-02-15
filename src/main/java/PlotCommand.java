@@ -113,9 +113,37 @@ public class PlotCommand implements CommandExecutor {
         return ChatColor.GREEN + "Successfully sold plot";
     }
 
+    private String infoPlot(int pos_x, int pos_z) {
+        Plot this_plot = this.plugin.db.loadPlot(pos_x, pos_z);
+
+        if (this_plot != null) {
+            String username = this.plugin.db.getOwner(pos_x, pos_z);
+
+            return ChatColor.GRAY + "Plot Info \n * Owner: " + username + "\n"
+                    + " * size: " + this_plot.getSize() + "\n"
+                    + " * pos_x: " + this_plot.getPos_x() + "\n"
+                    + " * pos_z: " + this_plot.getPos_z() + "\n";
+        } else {
+            return ChatColor.GRAY + "Here is nobody building.";
+        }
+
+    }
+
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] split) {
         Player player = (Player) sender;
+
+        if (split.length < 1) {
+            String help_page = ChatColor.GRAY + "Plot Help Page \n"
+                    + " * /plot buy [size] [pos_x] [pos_z] \n"
+                    + " * /plot add [username] \n"
+                    + " * /plot remove [username] \n"
+                    + " * /plot sell\n"
+                    + " * /plot price [size]";
+            player.sendMessage(help_page);
+            return true;
+        }
+
 
         if (split[0].equalsIgnoreCase("buy")) {
             if (split.length < 4) {
@@ -197,7 +225,8 @@ public class PlotCommand implements CommandExecutor {
 
             player.sendMessage(ChatColor.GRAY + "Price of the plot will be " + ChatColor.GREEN + price + "$");
 
-
+        } else if (split[0].equalsIgnoreCase("info")) {
+            player.sendMessage(infoPlot((int) player.getLocation().getX(), (int) player.getLocation().getZ()));
         } else if (split[0].equalsIgnoreCase("force_add") && player.isOp()) {
             if (split.length < 2) {
                 player.sendMessage(ChatColor.GRAY + "/city add [username] while staying on the plot you want the user to be added");

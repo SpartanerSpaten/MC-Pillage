@@ -10,7 +10,7 @@ commands:
   farm:
     description: Teleports Player into the given Farmworld Dimension or Creates a new requires Op rights
     usage: /farm <overworld, nether, end, create>
-  eggshop:
+  shop:
     description: Lets player buy spawn eggs
     usage: /shop
   home:
